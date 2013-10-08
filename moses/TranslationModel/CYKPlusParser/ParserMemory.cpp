@@ -2,6 +2,8 @@
 #include "moses/Util.h"
 #include "moses/WordsRange.h"
 #include "moses/Word.h"
+#include "moses/InputPath.h"
+#include "moses/NonTerminal.h"
 #include "moses/TranslationModel/PhraseDictionaryMemory.h"
 
 
@@ -27,9 +29,10 @@ ParserMemory::ParserMemory(const PhraseDictionaryMemory &pt, size_t inputSize)
 
 }
 
-void ParserMemory::Init(const Word &word
-		, const WordsRange &range)
+void ParserMemory::Init(const InputPath &path)
 {
+	const Word &word = path.GetLastWord();
+	const WordsRange &range = path.GetWordsRange();
 	const PhraseDictionaryNodeMemory &root = m_pt.GetRootNode();
 
 	size_t endPos = range.GetEndPos();
@@ -47,14 +50,19 @@ void ParserMemory::Init(const Word &word
 
 }
 
-void ParserMemory::Extend(const Word &word
-		, const WordsRange &prevRange
-		, const WordsRange &thisRange)
+void ParserMemory::Extend(const InputPath &path)
 {
+	const Word &word = path.GetLastWord();
+	const WordsRange &range = path.GetWordsRange();
+
+	const InputPath *prevPath = path.GetPrevPath();
+	assert(prevPath);
+	const WordsRange &prevRange = prevPath->GetWordsRange();
+
 	size_t prevEndPos = prevRange.GetEndPos();
 	const ActiveChart &prevChart = m_activeCharts[prevEndPos];
 
-	size_t endPos = thisRange.GetEndPos();
+	size_t endPos = range.GetEndPos();
 	ActiveChart &activeChart = m_activeCharts[endPos];
 
 	// terminal
@@ -64,10 +72,32 @@ void ParserMemory::Extend(const Word &word
 
 		const PhraseDictionaryNodeMemory *child = node.GetChild(word);
 		if (child) {
-			ActiveChartItem *item = new ActiveChartItem(thisRange, *child);
+			ActiveChartItem *item = new ActiveChartItem(range, *child);
 			activeChart.Add(item);
 		}
 	}
+
+	// non-term
+	ExtendNonTerms(path, prevRange, range);
+
+
+}
+
+void ParserMemory::ExtendNonTerms(const InputPath &path
+		, const WordsRange &prevRange
+		, const WordsRange &thisRange)
+{
+	// loop thru all non-terms
+	const NonTerminalSet &sourceNonTerms = path.GetNonTerminalSet();
+
+	NonTerminalSet::const_iterator iter;
+	for (iter = sourceNonTerms.begin(); iter != sourceNonTerms.end(); ++iter) {
+		const Word &sourceNonTerm = *iter;
+
+		// do lookup
+	}
+
+	// lookup non term which covers this range, and
 }
 
 } // namespace

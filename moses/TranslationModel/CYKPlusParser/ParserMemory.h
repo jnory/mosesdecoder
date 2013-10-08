@@ -6,7 +6,7 @@
 
 namespace Moses
 {
-
+class InputPath;
 class Word;
 class WordsRange;
 class PhraseDictionaryMemory;
@@ -56,17 +56,18 @@ class ParserMemory : public Parser
 public:
 	ParserMemory(const PhraseDictionaryMemory &pt, size_t inputSize);
 
-	void Init(const Word &word
-			, const WordsRange &range);
-
-	void Extend(const Word &word
-			, const WordsRange &prevRange
-			, const WordsRange &thisRange);
+	void Init(const InputPath &path);
+	void Extend(const InputPath &path);
 
 protected:
 	const PhraseDictionaryMemory &m_pt;
-
 	std::vector<ActiveChart> m_activeCharts;
+
+
+	void ExtendNonTerms(const InputPath &path
+			, const WordsRange &prevRange
+			, const WordsRange &thisRange);
+
 };
 
 }

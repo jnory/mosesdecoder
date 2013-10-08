@@ -40,6 +40,9 @@ protected:
   std::map<const PhraseDictionary*, std::pair<const TargetPhraseCollection*, const void*> > m_targetPhrases;
 
   // for syntax model only
+  // phrases which fits this source path, but are the acutal source side of the rule
+  // can contain non-terms & terms
+  // used but placeholder code
   mutable std::vector<std::vector<const Word*> > m_ruleSourceFromInputPath;
   const NonTerminalSet m_sourceNonTerms;
 
