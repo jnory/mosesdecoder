@@ -216,9 +216,8 @@ WordLattice::CreateTranslationOptionCollection() const
 
   if (StaticData::Instance().GetUseLegacyPT()) {
     rv = new TranslationOptionCollectionConfusionNet(*this, maxNoTransOptPerCoverage, translationOptionThreshold);
-  }
-  else {
-	rv = new TranslationOptionCollectionLattice(*this, maxNoTransOptPerCoverage, translationOptionThreshold);
+  } else {
+    rv = new TranslationOptionCollectionLattice(*this, maxNoTransOptPerCoverage, translationOptionThreshold);
   }
 
   CHECK(rv);
