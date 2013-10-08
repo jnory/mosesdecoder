@@ -142,12 +142,12 @@ GetTargetPhraseCollectionBatch(const InputPathList &inputPathQueue) const
   for (iter = inputPathQueue.begin(); iter != inputPathQueue.end(); ++iter) {
     InputPath &node = **iter;
     const Phrase &phrase = node.GetPhrase();
-    const InputPath *prevPath = node.GetPrevPath();
+    const InputPath *prefixInputPath = node.GetPrefixPath();
 
     const PhraseDictionaryNodeMemory *prevPtNode = NULL;
 
-    if (prevPath) {
-      prevPtNode = static_cast<const PhraseDictionaryNodeMemory*>(prevPath->GetPtNode(*this));
+    if (prefixInputPath) {
+      prevPtNode = static_cast<const PhraseDictionaryNodeMemory*>(prefixInputPath->GetPtNode(*this));
     } else {
       // Starting subphrase.
       assert(phrase.GetSize() == 1);

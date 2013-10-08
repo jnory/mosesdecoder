@@ -12,9 +12,9 @@ namespace Moses
 {
 InputPath::
 InputPath(const Phrase &phrase, const NonTerminalSet &sourceNonTerms,
-          const WordsRange &range, const InputPath *prevNode,
+          const WordsRange &range, const InputPath *prefixPath,
           const ScorePair *inputScore)
-  :m_prevPath(prevNode)
+  :m_prefixPath(prefixPath)
   ,m_phrase(phrase)
   ,m_range(range)
   ,m_inputScore(inputScore)
@@ -68,7 +68,7 @@ const Word &InputPath::GetLastWord() const
 
 std::ostream& operator<<(std::ostream& out, const InputPath& obj)
 {
-  out << &obj << " " << obj.GetWordsRange() << " " << obj.GetPrevPath() << " " << obj.GetPhrase();
+  out << &obj << " " << obj.GetWordsRange() << " " << obj.GetPrefixPath() << " " << obj.GetPhrase();
 
   out << "pt: ";
   std::map<const PhraseDictionary*, std::pair<const TargetPhraseCollection*, const void*> >::const_iterator iter;

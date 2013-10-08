@@ -30,7 +30,7 @@ class InputPath
   friend std::ostream& operator<<(std::ostream& out, const InputPath &obj);
 
 protected:
-  const InputPath *m_prevPath;
+  const InputPath *m_prefixPath;
   Phrase m_phrase;
   WordsRange m_range;
   const ScorePair *m_inputScore;
@@ -49,7 +49,7 @@ protected:
 
 public:
   explicit InputPath()
-    : m_prevPath(NULL)
+    : m_prefixPath(NULL)
     , m_range(NOT_FOUND, NOT_FOUND)
     , m_inputScore(NULL)
     , m_nextNode(NOT_FOUND)
@@ -70,8 +70,8 @@ public:
   }
   const Word &GetLastWord() const;
 
-  const InputPath *GetPrevPath() const {
-    return m_prevPath;
+  const InputPath *GetPrefixPath() const {
+    return m_prefixPath;
   }
 
   //! distance to next node in input lattice. For sentences and confusion networks, this should be 1 (default)

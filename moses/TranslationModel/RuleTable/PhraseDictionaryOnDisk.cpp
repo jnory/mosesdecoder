@@ -106,12 +106,12 @@ void PhraseDictionaryOnDisk::GetTargetPhraseCollectionBatch(InputPath &inputPath
 {
   OnDiskPt::OnDiskWrapper &wrapper = const_cast<OnDiskPt::OnDiskWrapper&>(GetImplementation());
   const Phrase &phrase = inputPath.GetPhrase();
-  const InputPath *prevInputPath = inputPath.GetPrevPath();
+  const InputPath *prefixInputPath = inputPath.GetPrefixPath();
 
   const OnDiskPt::PhraseNode *prevPtNode = NULL;
 
-  if (prevInputPath) {
-    prevPtNode = static_cast<const OnDiskPt::PhraseNode*>(prevInputPath->GetPtNode(*this));
+  if (prefixInputPath) {
+    prevPtNode = static_cast<const OnDiskPt::PhraseNode*>(prefixInputPath->GetPtNode(*this));
   } else {
     // Starting subphrase.
     assert(phrase.GetSize() == 1);
