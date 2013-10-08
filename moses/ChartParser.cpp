@@ -198,13 +198,13 @@ void ChartParser::Create(const WordsRange &wordsRange, ChartParserCallback &to)
 
 void ChartParser::CreateInputPaths(const InputType &input)
 {
-  size_t size = input.GetSize();
-  m_inputPathMatrix.resize(size);
+  size_t inputSize = input.GetSize();
+  m_inputPathMatrix.resize(inputSize);
 
   CHECK(input.GetType() == SentenceInput || input.GetType() == TreeInputType);
-  for (size_t phaseSize = 1; phaseSize <= size; ++phaseSize) {
-    for (size_t startPos = 0; startPos < size - phaseSize + 1; ++startPos) {
-      size_t endPos = startPos + phaseSize -1;
+  for (size_t phraseSize = 1; phraseSize <= inputSize; ++phraseSize) {
+    for (size_t startPos = 0; startPos < inputSize - phraseSize + 1; ++startPos) {
+      size_t endPos = startPos + phraseSize -1;
       vector<InputPath*> &vec = m_inputPathMatrix[startPos];
 
       WordsRange range(startPos, endPos);
@@ -220,9 +220,24 @@ void ChartParser::CreateInputPaths(const InputType &input)
         node = new InputPath(subphrase, labels, range, &prevNode, NULL);
         vec.push_back(node);
       }
-
-      //m_inputPathQueue.push_back(node);
     }
+  }
+
+  // create postfixes
+  for (size_t startPos = 0; startPos < inputSize; ++startPos) {
+	  for (size_t endPos = startPos; endPos < inputSize; ++endPos) {
+		  InputPath &path = GetInputPath(startPos, endPos);
+		  cerr << "path=" <<path << endl;
+		  const InputPath *prevPath = path.GetPrevPath();
+		  if (prevPath) {
+			  cerr << "prevPath=" << *prevPath << endl;
+
+			  const WordsRange &prevRange = prevPath->GetWordsRange();
+			  const InputPath &postfixPath = GetInputPath(prevRange.GetStartPos(), endPos);
+			  cerr << "postfixPath=" << postfixPath << endl;
+			  path.AddPostfixOf(&postfixPath);
+		  }
+	  }
   }
 }
 

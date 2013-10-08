@@ -80,6 +80,8 @@ private:
   void CreateInputPaths(const InputType &input);
   InputPath &GetInputPath(size_t startPos, size_t endPos);
 
+  void CreateInputPathPostfixes();
+
 };
 
 }

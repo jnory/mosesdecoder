@@ -50,14 +50,15 @@ void ParserMemory::Init(const InputPath &path)
 
 }
 
-void ParserMemory::Extend(const InputPath &path)
+void ParserMemory::Extend(const InputPath &path
+		, const WordsRange &prevRange)
 {
 	const Word &word = path.GetLastWord();
 	const WordsRange &range = path.GetWordsRange();
 
 	const InputPath *prevPath = path.GetPrevPath();
 	assert(prevPath);
-	const WordsRange &prevRange = prevPath->GetWordsRange();
+	//const WordsRange &prevRange
 
 	size_t prevEndPos = prevRange.GetEndPos();
 	const ActiveChart &prevChart = m_activeCharts[prevEndPos];
@@ -78,14 +79,24 @@ void ParserMemory::Extend(const InputPath &path)
 	}
 
 	// non-term
-	ExtendNonTerms(path, prevRange, range);
+	ExtendNonTermsRecursive(path);
 
 
 }
 
-void ParserMemory::ExtendNonTerms(const InputPath &path
-		, const WordsRange &prevRange
-		, const WordsRange &thisRange)
+void ParserMemory::ExtendNonTermsRecursive(const InputPath &path)
+{
+	// lookup non term which covers this range, and
+	ExtendNonTerms(path);
+
+	const std::vector<const InputPath*> &postfixPaths = path.GetPostfixOf();
+	for (size_t i = 0; i < postfixPaths.size(); ++i) {
+		const InputPath &postfixPath = *postfixPaths[i];
+		ExtendNonTerms(postfixPath);
+	}
+}
+
+void ParserMemory::ExtendNonTerms(const InputPath &path)
 {
 	// loop thru all non-terms
 	const NonTerminalSet &sourceNonTerms = path.GetNonTerminalSet();
@@ -97,7 +108,6 @@ void ParserMemory::ExtendNonTerms(const InputPath &path
 		// do lookup
 	}
 
-	// lookup non term which covers this range, and
 }
 
 } // namespace

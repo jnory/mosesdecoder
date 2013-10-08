@@ -45,7 +45,7 @@ protected:
   // used but placeholder code
   mutable std::vector<std::vector<const Word*> > m_ruleSourceFromInputPath;
   const NonTerminalSet m_sourceNonTerms;
-
+  std::vector<const InputPath*> m_postfixOf;
 
 public:
   explicit InputPath()
@@ -98,6 +98,14 @@ public:
     m_ruleSourceFromInputPath.push_back(std::vector<const Word*>());
     return m_ruleSourceFromInputPath.back();
   }
+
+  void AddPostfixOf(const InputPath *path)
+  {
+	  m_postfixOf.push_back(path);
+  }
+
+  const std::vector<const InputPath*> &GetPostfixOf() const
+  { return m_postfixOf; }
 
 };
 

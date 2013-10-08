@@ -57,16 +57,17 @@ public:
 	ParserMemory(const PhraseDictionaryMemory &pt, size_t inputSize);
 
 	void Init(const InputPath &path);
-	void Extend(const InputPath &path);
+
+	void Extend(const InputPath &path
+			, const WordsRange &prevRange);
 
 protected:
 	const PhraseDictionaryMemory &m_pt;
 	std::vector<ActiveChart> m_activeCharts;
 
 
-	void ExtendNonTerms(const InputPath &path
-			, const WordsRange &prevRange
-			, const WordsRange &thisRange);
+	void ExtendNonTermsRecursive(const InputPath &path);
+	void ExtendNonTerms(const InputPath &path);
 
 };
 
