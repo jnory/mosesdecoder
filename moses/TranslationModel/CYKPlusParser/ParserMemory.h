@@ -17,6 +17,13 @@ class ActiveChartItem
 public:
 	ActiveChartItem(const WordsRange &range,
 					const PhraseDictionaryNodeMemory &node);
+
+	const WordsRange &GetRange() const
+	{ return m_range; }
+
+	const PhraseDictionaryNodeMemory &GetNode() const
+	{ return m_node; }
+
 protected:
 	const WordsRange &m_range;
 	const PhraseDictionaryNodeMemory &m_node;
@@ -25,6 +32,8 @@ protected:
 class ActiveChart
 {
 public:
+	typedef std::vector<const ActiveChartItem*> Coll;
+
 	ActiveChart()
 	{}
 	virtual ~ActiveChart();
@@ -33,8 +42,12 @@ public:
 	{
 		m_coll.push_back(item);
 	}
+
+	const Coll &GetColl() const
+	{ return m_coll; }
+
 protected:
-	std::vector<const ActiveChartItem*> m_coll;
+	Coll m_coll;
 
 };
 
@@ -48,7 +61,7 @@ public:
 
 	void Extend(const Word &word
 			, const WordsRange &prevRange
-			, size_t nextPos);
+			, const WordsRange &thisRange);
 
 protected:
 	const PhraseDictionaryMemory &m_pt;

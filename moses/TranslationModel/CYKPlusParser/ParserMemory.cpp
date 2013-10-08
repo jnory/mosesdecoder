@@ -32,12 +32,14 @@ void ParserMemory::Init(const Word &word
 {
 	const PhraseDictionaryNodeMemory &root = m_pt.GetRootNode();
 
+	size_t endPos = range.GetEndPos();
+	ActiveChart &activeChart = m_activeCharts[endPos];
+
+
 	// terminal
 	const PhraseDictionaryNodeMemory *child = root.GetChild(word);
 	if (child) {
 		ActiveChartItem *item = new ActiveChartItem(range, *child);
-
-		ActiveChart &activeChart = m_activeCharts[range.GetEndPos()];
 		activeChart.Add(item);
 	}
 
@@ -47,9 +49,22 @@ void ParserMemory::Init(const Word &word
 
 void ParserMemory::Extend(const Word &word
 		, const WordsRange &prevRange
-		, size_t nextPos)
+		, const WordsRange &thisRange)
 {
+	size_t endPos = thisRange.GetEndPos();
+	ActiveChart &activeChart = m_activeCharts[endPos];
 
+	// terminal
+	for (size_t i = 0; i < activeChart.GetColl().size(); ++i) {
+		const ActiveChartItem &item = *activeChart.GetColl()[i];
+		const PhraseDictionaryNodeMemory &node = item.GetNode();
+
+		const PhraseDictionaryNodeMemory *child = node.GetChild(word);
+		if (child) {
+			ActiveChartItem *item = new ActiveChartItem(thisRange, *child);
+			activeChart.Add(item);
+		}
+	}
 }
 
 } // namespace

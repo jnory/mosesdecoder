@@ -16,7 +16,7 @@ public:
 
 	virtual void Extend(const Word &word
 			, const WordsRange &prevRange
-			, size_t nextPos) = 0;
+			, const WordsRange &thisRange) = 0;
 
 };
 
