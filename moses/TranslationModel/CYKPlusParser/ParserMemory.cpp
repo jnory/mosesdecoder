@@ -51,12 +51,15 @@ void ParserMemory::Extend(const Word &word
 		, const WordsRange &prevRange
 		, const WordsRange &thisRange)
 {
+	size_t prevEndPos = prevRange.GetEndPos();
+	const ActiveChart &prevChart = m_activeCharts[prevEndPos];
+
 	size_t endPos = thisRange.GetEndPos();
 	ActiveChart &activeChart = m_activeCharts[endPos];
 
 	// terminal
-	for (size_t i = 0; i < activeChart.GetColl().size(); ++i) {
-		const ActiveChartItem &item = *activeChart.GetColl()[i];
+	for (size_t i = 0; i < prevChart.GetColl().size(); ++i) {
+		const ActiveChartItem &item = *prevChart.GetColl()[i];
 		const PhraseDictionaryNodeMemory &node = item.GetNode();
 
 		const PhraseDictionaryNodeMemory *child = node.GetChild(word);
