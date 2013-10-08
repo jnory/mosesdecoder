@@ -35,6 +35,7 @@
 #include "moses/TranslationModel/RuleTable/Loader.h"
 #include "moses/TranslationModel/CYKPlusParser/ChartRuleLookupManagerMemory.h"
 #include "moses/InputPath.h"
+#include "CYKPlusParser/ParserMemory.h"
 
 using namespace std;
 
@@ -186,6 +187,12 @@ ostream& operator<<(ostream& out, const PhraseDictionaryMemory& phraseDict)
     out << sourceTerm;
   }
   return out;
+}
+
+Parser *PhraseDictionaryMemory::GetParser()
+{
+	ParserMemory *parser = new ParserMemory(*this, 22);
+	return parser;
 }
 
 }

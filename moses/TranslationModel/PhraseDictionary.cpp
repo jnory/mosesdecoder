@@ -175,5 +175,10 @@ PhraseDictionary::CacheColl &PhraseDictionary::GetCache() const
   return *cache;
 }
 
+Parser *PhraseDictionary::GetParser()
+{
+	UTIL_THROW(util::Exception, "Legacy method not implemented");
+}
+
 } // namespace
 

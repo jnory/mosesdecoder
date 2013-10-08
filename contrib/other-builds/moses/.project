@@ -1802,6 +1802,26 @@
 			<locationURI>PARENT-3-PROJECT_LOC/moses/TranslationModel/CYKPlusParser/DotChartOnDisk.h</locationURI>
 		</link>
 		<link>
+			<name>TranslationModel/CYKPlusParser/Parser.cpp</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/moses/TranslationModel/CYKPlusParser/Parser.cpp</locationURI>
+		</link>
+		<link>
+			<name>TranslationModel/CYKPlusParser/Parser.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/moses/TranslationModel/CYKPlusParser/Parser.h</locationURI>
+		</link>
+		<link>
+			<name>TranslationModel/CYKPlusParser/ParserMemory.cpp</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/moses/TranslationModel/CYKPlusParser/ParserMemory.cpp</locationURI>
+		</link>
+		<link>
+			<name>TranslationModel/CYKPlusParser/ParserMemory.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/moses/TranslationModel/CYKPlusParser/ParserMemory.h</locationURI>
+		</link>
+		<link>
 			<name>TranslationModel/CompactPT/BlockHashIndex.cpp</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/moses/TranslationModel/CompactPT/BlockHashIndex.cpp</locationURI>
