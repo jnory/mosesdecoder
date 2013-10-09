@@ -11,7 +11,6 @@ class WordsRange;
 class Parser
 {
 public:
-	Parser();
 	/*
 	virtual void Init(const Word &word
 			, const WordsRange &range) = 0;
