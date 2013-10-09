@@ -56,7 +56,7 @@ void ParserMemory::Extend(const InputPath &path
 	const Word &word = path.GetLastWord();
 	const WordsRange &range = path.GetWordsRange();
 
-	const InputPath *prevPath = path.GetPrevPath();
+	const InputPath *prevPath = path.GetPrefixPath();
 	assert(prevPath);
 	//const WordsRange &prevRange
 

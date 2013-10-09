@@ -228,17 +228,21 @@ void ChartParser::CreateInputPaths(const InputType &input)
 	  for (size_t endPos = startPos; endPos < inputSize; ++endPos) {
 		  InputPath &path = GetInputPath(startPos, endPos);
 		  cerr << "path=" <<path << endl;
-		  const InputPath *prevPath = path.GetPrevPath();
-		  if (prevPath) {
-			  cerr << "prevPath=" << *prevPath << endl;
-
-			  const WordsRange &prevRange = prevPath->GetWordsRange();
-			  const InputPath &postfixPath = GetInputPath(prevRange.GetStartPos(), endPos);
-			  cerr << "postfixPath=" << postfixPath << endl;
-			  path.AddPostfixOf(&postfixPath);
-		  }
+		  CreateInputPathPostfixes(path);
 	  }
   }
+}
+
+void ChartParser::CreateInputPathPostfixes(InputPath &path)
+{
+  const WordsRange &range = path.GetWordsRange();
+  size_t endPos = range.GetEndPos();
+  for (size_t startPos = range.GetStartPos() + 1; startPos <= endPos; ++startPos) {
+	  const InputPath &postfixPath = GetInputPath(startPos, endPos);
+	  cerr << "postfixPath=" << postfixPath << endl;
+	  path.AddPostfixOf(&postfixPath);
+  }
+
 }
 
 const InputPath &ChartParser::GetInputPath(WordsRange &range) const
