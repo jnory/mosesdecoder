@@ -150,8 +150,8 @@ ChartParser::ChartParser(InputType const &source, ChartCellCollectionBase &cells
     ChartRuleLookupManager *lookupMgr = nonConstDict->CreateRuleLookupManager(*this, cells);
     m_ruleLookupManagers.push_back(lookupMgr);
 
-    Parser *newLookupMgr = nonConstDict->GetParser(static_cast<const ChartCellCollection&>(cells));
-    m_lookupManagers.push_back(newLookupMgr);
+    //Parser *newLookupMgr = nonConstDict->GetParser(static_cast<const ChartCellCollection&>(cells));
+    //m_lookupManagers.push_back(newLookupMgr);
   }
 
 }
