@@ -36,13 +36,9 @@ class ChartHypothesisCollection;
 class ChartCellLabelSet
 {
 private:
-#if defined(BOOST_VERSION) && (BOOST_VERSION >= 104200)
   typedef boost::unordered_map<Word, ChartCellLabel,
           NonTerminalHasher, NonTerminalEqualityPred
           > MapType;
-#else
-  typedef std::map<Word, ChartCellLabel> MapType;
-#endif
 
 public:
   typedef MapType::const_iterator const_iterator;

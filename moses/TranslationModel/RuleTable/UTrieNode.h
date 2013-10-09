@@ -44,7 +44,6 @@ class UTrieNode
 {
 public:
   typedef std::vector<std::vector<Word> > LabelTable;
-#if defined(BOOST_VERSION) && (BOOST_VERSION >= 104200)
   typedef boost::unordered_map<Word,
           UTrieNode,
           TerminalHasher,
@@ -52,10 +51,6 @@ public:
 
   typedef boost::unordered_map<std::vector<int>,
           TargetPhraseCollection> LabelMap;
-#else
-  typedef std::map<Word, UTrieNode> TerminalMap;
-  typedef std::map<std::vector<int>, TargetPhraseCollection> LabelMap;
-#endif
 
   ~UTrieNode() {
     delete m_gapNode;

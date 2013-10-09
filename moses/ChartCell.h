@@ -75,15 +75,11 @@ class ChartCell : public ChartCellBase
 {
   friend std::ostream& operator<<(std::ostream&, const ChartCell&);
 public:
-#if defined(BOOST_VERSION) && (BOOST_VERSION >= 104200)
   typedef boost::unordered_map<Word,
           ChartHypothesisCollection,
           NonTerminalHasher,
           NonTerminalEqualityPred
           > MapType;
-#else
-  typedef std::map<Word, ChartHypothesisCollection> MapType;
-#endif
 
 protected:
   MapType m_hypoColl;

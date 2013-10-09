@@ -95,7 +95,6 @@ class PhraseDictionaryNodeMemory
 public:
   typedef std::pair<Word, Word> NonTerminalMapKey;
 
-#if defined(BOOST_VERSION) && (BOOST_VERSION >= 104200)
   typedef boost::unordered_map<Word,
           PhraseDictionaryNodeMemory,
           TerminalHasher,
@@ -105,10 +104,6 @@ public:
           PhraseDictionaryNodeMemory,
           NonTerminalMapKeyHasher,
           NonTerminalMapKeyEqualityPred> NonTerminalMap;
-#else
-  typedef std::map<Word, PhraseDictionaryNodeMemory> TerminalMap;
-  typedef std::map<NonTerminalMapKey, PhraseDictionaryNodeMemory> NonTerminalMap;
-#endif
 
 private:
   friend std::ostream& operator<<(std::ostream&, const PhraseDictionaryMemory&);

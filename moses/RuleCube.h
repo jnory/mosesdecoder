@@ -113,14 +113,10 @@ public:
   }
 
 private:
-#if defined(BOOST_VERSION) && (BOOST_VERSION >= 104200)
   typedef boost::unordered_set<RuleCubeItem*,
           RuleCubeItemHasher,
           RuleCubeItemEqualityPred
           > ItemSet;
-#else
-  typedef std::set<RuleCubeItem*, RuleCubeItemPositionOrderer> ItemSet;
-#endif
 
   typedef std::priority_queue<RuleCubeItem*,
           std::vector<RuleCubeItem*>,
