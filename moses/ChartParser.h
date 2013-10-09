@@ -39,6 +39,7 @@ class Word;
 class Phrase;
 class TargetPhraseCollection;
 class DecodeGraph;
+class Parser;
 
 class ChartParserUnknown
 {
@@ -72,6 +73,8 @@ private:
   ChartParserUnknown m_unknown;
   std::vector <DecodeGraph*> m_decodeGraphList;
   std::vector<ChartRuleLookupManager*> m_ruleLookupManagers;
+  std::vector<Parser*> m_lookupManagers;
+
   InputType const& m_source; /**< source sentence to be translated */
 
   typedef std::vector< std::vector<InputPath*> > InputPathMatrix;

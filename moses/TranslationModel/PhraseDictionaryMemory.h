@@ -29,6 +29,7 @@
 namespace Moses
 {
 class ChartParser;
+class ChartCellCollection;
 
 /** Implementation of a SCFG rule table in a trie.  Looking up a rule of
  * length n symbols requires n look-ups to find the TargetPhraseCollection.
@@ -55,7 +56,7 @@ public:
     const ChartParser &,
     const ChartCellCollectionBase &);
 
-  Parser *GetParser();
+  Parser *GetParser(const ChartCellCollection &chart);
 
   // only used by multi-model phrase table, and other meta-features
   const TargetPhraseCollection *GetTargetPhraseCollectionLEGACY(const Phrase& src) const;

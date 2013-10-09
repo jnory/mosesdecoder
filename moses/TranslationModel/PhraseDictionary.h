@@ -53,6 +53,7 @@ class ChartCellCollectionBase;
 class ChartRuleLookupManager;
 class ChartParser;
 class Parser;
+class ChartCellCollection;
 
 /**
   * Abstract base class for phrase dictionaries (tables).
@@ -96,7 +97,7 @@ public:
     const ChartCellCollectionBase &) = 0;
 
   //! Create a sentence-specific manager for SCFG rule lookup.
-  virtual Parser *GetParser();
+  virtual Parser *GetParser(const ChartCellCollection &chart);
 
   const std::string &GetFilePath() const {
     return m_filePath;

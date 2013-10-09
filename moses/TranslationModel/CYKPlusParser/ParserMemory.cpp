@@ -5,7 +5,10 @@
 #include "moses/InputPath.h"
 #include "moses/NonTerminal.h"
 #include "moses/TranslationModel/PhraseDictionaryMemory.h"
+#include "moses/ChartCell.h"
+#include "moses/ChartCellCollection.h"
 
+using namespace std;
 
 namespace Moses
 {
@@ -22,8 +25,11 @@ ActiveChart::~ActiveChart()
 	RemoveAllInColl(m_coll);
 }
 
-ParserMemory::ParserMemory(const PhraseDictionaryMemory &pt, size_t inputSize)
-:m_pt(pt)
+ParserMemory::ParserMemory(const ChartCellCollection &chart
+							, const PhraseDictionaryMemory &pt
+							, size_t inputSize)
+:m_chart(chart)
+,m_pt(pt)
 ,m_activeCharts(inputSize)
 {
 
@@ -79,31 +85,42 @@ void ParserMemory::Extend(const InputPath &path
 	}
 
 	// non-term
-	ExtendNonTermsRecursive(path);
-
-
-}
-
-void ParserMemory::ExtendNonTermsRecursive(const InputPath &path)
-{
-	// lookup non term which covers this range, and
 	ExtendNonTerms(path);
 
-	const std::vector<const InputPath*> &postfixPaths = path.GetPostfixOf();
-	for (size_t i = 0; i < postfixPaths.size(); ++i) {
-		const InputPath &postfixPath = *postfixPaths[i];
-		ExtendNonTerms(postfixPath);
-	}
+
 }
 
 void ParserMemory::ExtendNonTerms(const InputPath &path)
 {
+	// lookup non term which covers the whole range
+	ExtendNonTermsWithPostFixPath(path);
+
+	const std::vector<const InputPath*> &postfixPaths = path.GetPostfixOf();
+	for (size_t i = 0; i < postfixPaths.size(); ++i) {
+		const InputPath &postfixPath = *postfixPaths[i];
+		ExtendNonTermsWithPostFixPath(postfixPath);
+	}
+}
+
+void ParserMemory::ExtendNonTermsWithPostFixPath(const InputPath &path)
+{
+	const WordsRange &range = path.GetWordsRange();
+	const ChartCell &cell = m_chart.Get(range);
+	const ChartCellLabelSet &targetLabels = cell.GetTargetLabelSet();
+
 	// loop thru all non-terms
 	const NonTerminalSet &sourceNonTerms = path.GetNonTerminalSet();
 
-	NonTerminalSet::const_iterator iter;
-	for (iter = sourceNonTerms.begin(); iter != sourceNonTerms.end(); ++iter) {
-		const Word &sourceNonTerm = *iter;
+	NonTerminalSet::const_iterator iterSourceNonTerms;
+	for (iterSourceNonTerms = sourceNonTerms.begin(); iterSourceNonTerms != sourceNonTerms.end(); ++iterSourceNonTerms) {
+		const Word &sourceNonTerm = *iterSourceNonTerms;
+
+		ChartCellLabelSet::const_iterator iterTargetLabels;
+		for (iterTargetLabels = targetLabels.begin(); iterTargetLabels != targetLabels.end(); ++iterTargetLabels) {
+			const Word &targetLabel = iterTargetLabels->first;
+			cerr << "non-terms=" << sourceNonTerm << targetLabel << endl;
+		}
+
 
 		// do lookup
 	}

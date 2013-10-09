@@ -28,6 +28,7 @@
 #include "DecodeGraph.h"
 #include "moses/FF/UnknownWordPenaltyProducer.h"
 #include "moses/TranslationModel/PhraseDictionary.h"
+#include "moses/TranslationModel/CYKPlusParser/Parser.h"
 
 using namespace std;
 using namespace Moses;
@@ -147,8 +148,10 @@ ChartParser::ChartParser(InputType const &source, ChartCellCollectionBase &cells
     PhraseDictionary *nonConstDict = const_cast<PhraseDictionary*>(dict);
 
     ChartRuleLookupManager *lookupMgr = nonConstDict->CreateRuleLookupManager(*this, cells);
-
     m_ruleLookupManagers.push_back(lookupMgr);
+
+    Parser *newLookupMgr = nonConstDict->GetParser(static_cast<const ChartCellCollection&>(cells));
+    m_lookupManagers.push_back(newLookupMgr);
   }
 
 }
@@ -194,6 +197,14 @@ void ChartParser::Create(const WordsRange &wordsRange, ChartParserCallback &to)
       m_unknown.Process(sourceWord, wordsRange, to);
     }
   }
+
+
+  // new
+  for (size_t i = 0; i < m_lookupManagers.size(); ++i) {
+	  Parser &newLookupMgr = *m_lookupManagers[i];
+	  //newLookupMgr.Extend()
+  }
+
 }
 
 void ChartParser::CreateInputPaths(const InputType &input)

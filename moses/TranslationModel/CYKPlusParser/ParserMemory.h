@@ -11,6 +11,7 @@ class Word;
 class WordsRange;
 class PhraseDictionaryMemory;
 class PhraseDictionaryNodeMemory;
+class ChartCellCollection;
 
 class ActiveChartItem
 {
@@ -54,7 +55,9 @@ protected:
 class ParserMemory : public Parser
 {
 public:
-	ParserMemory(const PhraseDictionaryMemory &pt, size_t inputSize);
+	ParserMemory(const ChartCellCollection &chart
+			, const PhraseDictionaryMemory &pt
+			, size_t inputSize);
 
 	void Init(const InputPath &path);
 
@@ -62,12 +65,13 @@ public:
 			, const WordsRange &prevRange);
 
 protected:
+	const ChartCellCollection &m_chart;
 	const PhraseDictionaryMemory &m_pt;
 	std::vector<ActiveChart> m_activeCharts;
 
 
-	void ExtendNonTermsRecursive(const InputPath &path);
 	void ExtendNonTerms(const InputPath &path);
+	void ExtendNonTermsWithPostFixPath(const InputPath &path);
 
 };
 

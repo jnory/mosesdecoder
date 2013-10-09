@@ -189,9 +189,9 @@ ostream& operator<<(ostream& out, const PhraseDictionaryMemory& phraseDict)
   return out;
 }
 
-Parser *PhraseDictionaryMemory::GetParser()
+Parser *PhraseDictionaryMemory::GetParser(const ChartCellCollection &chart)
 {
-	ParserMemory *parser = new ParserMemory(*this, 22);
+	ParserMemory *parser = new ParserMemory(chart, *this, 22);
 	return parser;
 }
 
