@@ -175,7 +175,7 @@ PhraseDictionary::CacheColl &PhraseDictionary::GetCache() const
   return *cache;
 }
 
-Parser *PhraseDictionary::GetParser(const ChartCellCollection &chart)
+ChartLookup *PhraseDictionary::GetChartLookup(const ChartCellCollection &chart)
 {
 	UTIL_THROW(util::Exception, "Legacy method not implemented");
 }

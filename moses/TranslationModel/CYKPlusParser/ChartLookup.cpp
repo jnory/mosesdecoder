@@ -1,4 +1,4 @@
-#include "Parser.h"
+#include "ChartLookup.h"
 
 
 namespace Moses

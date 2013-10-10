@@ -2,7 +2,7 @@
 
 #include <unistd.h>
 #include <vector>
-#include "Parser.h"
+#include "ChartLookup.h"
 
 namespace Moses
 {
@@ -52,10 +52,10 @@ protected:
 
 };
 
-class ParserMemory : public Parser
+class ChartLookupMemory : public ChartLookup
 {
 public:
-	ParserMemory(const ChartCellCollection &chart
+	ChartLookupMemory(const ChartCellCollection &chart
 			, const PhraseDictionaryMemory &pt
 			, size_t inputSize);
 

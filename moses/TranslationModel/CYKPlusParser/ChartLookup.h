@@ -6,7 +6,7 @@ namespace Moses
 {
 class InputPath;
 
-class Parser
+class ChartLookup
 {
 public:
 	virtual void Init(const InputPath &path) = 0;

@@ -56,7 +56,7 @@ public:
     const ChartParser &,
     const ChartCellCollectionBase &);
 
-  Parser *GetParser(const ChartCellCollection &chart);
+  ChartLookup *GetChartLookup(const ChartCellCollection &chart);
 
   // only used by multi-model phrase table, and other meta-features
   const TargetPhraseCollection *GetTargetPhraseCollectionLEGACY(const Phrase& src) const;

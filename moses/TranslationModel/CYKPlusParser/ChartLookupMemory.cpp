@@ -1,4 +1,4 @@
-#include "ParserMemory.h"
+#include "ChartLookupMemory.h"
 #include "moses/Util.h"
 #include "moses/WordsRange.h"
 #include "moses/Word.h"
@@ -25,7 +25,7 @@ ActiveChart::~ActiveChart()
 	RemoveAllInColl(m_coll);
 }
 
-ParserMemory::ParserMemory(const ChartCellCollection &chart
+ChartLookupMemory::ChartLookupMemory(const ChartCellCollection &chart
 							, const PhraseDictionaryMemory &pt
 							, size_t inputSize)
 :m_chart(chart)
@@ -35,7 +35,7 @@ ParserMemory::ParserMemory(const ChartCellCollection &chart
 
 }
 
-void ParserMemory::Init(const InputPath &path)
+void ChartLookupMemory::Init(const InputPath &path)
 {
 	const Word &word = path.GetLastWord();
 	const WordsRange &range = path.GetWordsRange();
@@ -53,7 +53,7 @@ void ParserMemory::Init(const InputPath &path)
 	}
 }
 
-void ParserMemory::Extend(const InputPath &path)
+void ChartLookupMemory::Extend(const InputPath &path)
 {
 	const Word &word = path.GetLastWord();
 	const WordsRange &range = path.GetWordsRange();
@@ -86,7 +86,7 @@ void ParserMemory::Extend(const InputPath &path)
 
 }
 
-void ParserMemory::ExtendNonTerms(const InputPath &path)
+void ChartLookupMemory::ExtendNonTerms(const InputPath &path)
 {
 	// lookup non term which covers previous range.
 	// It wouldn't have been done the last time round
@@ -101,7 +101,7 @@ void ParserMemory::ExtendNonTerms(const InputPath &path)
 	}
 }
 
-void ParserMemory::ExtendNonTermsWithPostFixPath(const InputPath &path)
+void ChartLookupMemory::ExtendNonTermsWithPostFixPath(const InputPath &path)
 {
 	const WordsRange &range = path.GetWordsRange();
 	const ChartCell &cell = m_chart.Get(range);

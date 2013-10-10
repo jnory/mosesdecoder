@@ -35,7 +35,7 @@
 #include "moses/TranslationModel/RuleTable/Loader.h"
 #include "moses/TranslationModel/CYKPlusParser/ChartRuleLookupManagerMemory.h"
 #include "moses/InputPath.h"
-#include "CYKPlusParser/ParserMemory.h"
+#include "CYKPlusParser/ChartLookupMemory.h"
 
 using namespace std;
 
@@ -189,10 +189,10 @@ ostream& operator<<(ostream& out, const PhraseDictionaryMemory& phraseDict)
   return out;
 }
 
-Parser *PhraseDictionaryMemory::GetParser(const ChartCellCollection &chart)
+ChartLookup *PhraseDictionaryMemory::GetChartLookup(const ChartCellCollection &chart)
 {
-	ParserMemory *parser = new ParserMemory(chart, *this, 22);
-	return parser;
+	ChartLookupMemory *chartLookup = new ChartLookupMemory(chart, *this, 22);
+	return chartLookup;
 }
 
 }
