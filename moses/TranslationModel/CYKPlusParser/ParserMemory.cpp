@@ -58,11 +58,11 @@ void ParserMemory::Extend(const InputPath &path)
 	const Word &word = path.GetLastWord();
 	const WordsRange &range = path.GetWordsRange();
 
-	const InputPath *prevPath = path.GetPrefixPath();
-	assert(prevPath);
-	const WordsRange &prevRange = prevPath->GetWordsRange();
+	const InputPath *prefixPath = path.GetPrefixPath();
+	assert(prefixPath);
+	const WordsRange &prefixRange = prefixPath->GetWordsRange();
 
-	size_t prevEndPos = prevRange.GetEndPos();
+	size_t prevEndPos = prefixRange.GetEndPos();
 	const ActiveChart &prevChart = m_activeCharts[prevEndPos];
 
 	size_t endPos = range.GetEndPos();
