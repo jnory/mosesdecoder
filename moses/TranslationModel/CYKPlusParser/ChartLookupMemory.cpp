@@ -50,6 +50,9 @@ void ChartLookupMemory::Init(const InputPath &path)
 	if (child) {
 		ActiveChartItem *item = new ActiveChartItem(range, *child);
 		activeChart.Add(item);
+
+		const TargetPhraseCollection &tpColl = child->GetTargetPhraseCollection();
+		path.SetTargetPhrases(m_pt, &tpColl, child);
 	}
 }
 
@@ -77,6 +80,9 @@ void ChartLookupMemory::Extend(const InputPath &path)
 		if (child) {
 			ActiveChartItem *item = new ActiveChartItem(range, *child);
 			activeChart.Add(item);
+
+			const TargetPhraseCollection &tpColl = child->GetTargetPhraseCollection();
+			path.SetTargetPhrases(m_pt, &tpColl, child);
 		}
 	}
 

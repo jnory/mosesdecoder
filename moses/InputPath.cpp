@@ -52,7 +52,7 @@ const void *InputPath::GetPtNode(const PhraseDictionary &phraseDictionary) const
 
 void InputPath::SetTargetPhrases(const PhraseDictionary &phraseDictionary
                                  , const TargetPhraseCollection *targetPhrases
-                                 , const void *ptNode)
+                                 , const void *ptNode) const
 {
   std::pair<const TargetPhraseCollection*, const void*> value(targetPhrases, ptNode);
   m_targetPhrases[&phraseDictionary] = value;

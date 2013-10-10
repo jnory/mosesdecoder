@@ -37,7 +37,7 @@ protected:
   size_t m_nextNode; // distance to next node. For lattices
 
   // for phrase-based model only
-  std::map<const PhraseDictionary*, std::pair<const TargetPhraseCollection*, const void*> > m_targetPhrases;
+  mutable std::map<const PhraseDictionary*, std::pair<const TargetPhraseCollection*, const void*> > m_targetPhrases;
 
   // for syntax model only
   // phrases which fits this source path, but are the acutal source side of the rule
@@ -85,7 +85,7 @@ public:
 
   void SetTargetPhrases(const PhraseDictionary &phraseDictionary
                         , const TargetPhraseCollection *targetPhrases
-                        , const void *ptNode);
+                        , const void *ptNode) const;
   const TargetPhraseCollection *GetTargetPhrases(const PhraseDictionary &phraseDictionary) const;
 
   // pointer to internal node in phrase-table. Since this is implementation dependent, this is a void*
