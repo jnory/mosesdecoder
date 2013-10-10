@@ -45,26 +45,22 @@ void ParserMemory::Init(const InputPath &path)
 	ActiveChart &activeChart = m_activeCharts[endPos];
 
 
-	// terminal
+	// just terminal
 	const PhraseDictionaryNodeMemory *child = root.GetChild(word);
 	if (child) {
 		ActiveChartItem *item = new ActiveChartItem(range, *child);
 		activeChart.Add(item);
 	}
-
-	// non-terminal
-
 }
 
-void ParserMemory::Extend(const InputPath &path
-		, const WordsRange &prevRange)
+void ParserMemory::Extend(const InputPath &path)
 {
 	const Word &word = path.GetLastWord();
 	const WordsRange &range = path.GetWordsRange();
 
 	const InputPath *prevPath = path.GetPrefixPath();
 	assert(prevPath);
-	//const WordsRange &prevRange
+	const WordsRange &prevRange = prevPath->GetWordsRange();
 
 	size_t prevEndPos = prevRange.GetEndPos();
 	const ActiveChart &prevChart = m_activeCharts[prevEndPos];
@@ -92,8 +88,11 @@ void ParserMemory::Extend(const InputPath &path
 
 void ParserMemory::ExtendNonTerms(const InputPath &path)
 {
-	// lookup non term which covers the whole range
-	ExtendNonTermsWithPostFixPath(path);
+	// lookup non term which covers previous range.
+	// It wouldn't have been done the last time round
+	const InputPath *prefixPath = path.GetPrefixPath();
+	CHECK(prefixPath);
+	ExtendNonTermsWithPostFixPath(*prefixPath);
 
 	const std::vector<const InputPath*> &postfixPaths = path.GetPostfixOf();
 	for (size_t i = 0; i < postfixPaths.size(); ++i) {
@@ -114,6 +113,7 @@ void ParserMemory::ExtendNonTermsWithPostFixPath(const InputPath &path)
 	NonTerminalSet::const_iterator iterSourceNonTerms;
 	for (iterSourceNonTerms = sourceNonTerms.begin(); iterSourceNonTerms != sourceNonTerms.end(); ++iterSourceNonTerms) {
 		const Word &sourceNonTerm = *iterSourceNonTerms;
+		cerr << "sourceNonTerm=" << sourceNonTerm << endl;
 
 		ChartCellLabelSet::const_iterator iterTargetLabels;
 		for (iterTargetLabels = targetLabels.begin(); iterTargetLabels != targetLabels.end(); ++iterTargetLabels) {

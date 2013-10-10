@@ -61,8 +61,7 @@ public:
 
 	void Init(const InputPath &path);
 
-	void Extend(const InputPath &path
-			, const WordsRange &prevRange);
+	void Extend(const InputPath &path);
 
 protected:
 	const ChartCellCollection &m_chart;

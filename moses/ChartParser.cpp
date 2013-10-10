@@ -150,8 +150,8 @@ ChartParser::ChartParser(InputType const &source, ChartCellCollectionBase &cells
     ChartRuleLookupManager *lookupMgr = nonConstDict->CreateRuleLookupManager(*this, cells);
     m_ruleLookupManagers.push_back(lookupMgr);
 
-    //Parser *newLookupMgr = nonConstDict->GetParser(static_cast<const ChartCellCollection&>(cells));
-    //m_lookupManagers.push_back(newLookupMgr);
+    Parser *newLookupMgr = nonConstDict->GetParser(static_cast<const ChartCellCollection&>(cells));
+    m_lookupManagers.push_back(newLookupMgr);
   }
 
 }
@@ -175,7 +175,7 @@ ChartParser::~ChartParser()
 
 void ChartParser::Create(const WordsRange &wordsRange, ChartParserCallback &to)
 {
-  assert(m_decodeGraphList.size() == m_ruleLookupManagers.size());
+	assert(m_decodeGraphList.size() == m_ruleLookupManagers.size());
 
   std::vector <DecodeGraph*>::const_iterator iterDecodeGraph;
   std::vector <ChartRuleLookupManager*>::const_iterator iterRuleLookupManagers = m_ruleLookupManagers.begin();
@@ -200,9 +200,17 @@ void ChartParser::Create(const WordsRange &wordsRange, ChartParserCallback &to)
 
 
   // new
-  for (size_t i = 0; i < m_lookupManagers.size(); ++i) {
+ cerr << "wordsRange=" << wordsRange  << endl;
+ const InputPath &path = GetInputPath(wordsRange);
+ for (size_t i = 0; i < m_lookupManagers.size(); ++i) {
 	  Parser &newLookupMgr = *m_lookupManagers[i];
-	  //newLookupMgr.Extend()
+
+	  if (wordsRange.GetNumWordsCovered() == 1) {
+	    newLookupMgr.Init(path);
+	  }
+	  else {
+		newLookupMgr.Extend(path);
+	  }
   }
 
 }
@@ -256,7 +264,7 @@ void ChartParser::CreateInputPathPostfixes(InputPath &path)
 
 }
 
-const InputPath &ChartParser::GetInputPath(WordsRange &range) const
+const InputPath &ChartParser::GetInputPath(const WordsRange &range) const
 {
   return GetInputPath(range.GetStartPos(), range.GetEndPos());
 }
