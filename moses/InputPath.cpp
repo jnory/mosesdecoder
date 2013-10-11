@@ -52,11 +52,32 @@ const void *InputPath::GetPtNode(const PhraseDictionary &phraseDictionary) const
 
 void InputPath::SetTargetPhrases(const PhraseDictionary &phraseDictionary
                                  , const TargetPhraseCollection *targetPhrases
-                                 , const void *ptNode) const
+                                 , const void *ptNode)
 {
-  std::pair<const TargetPhraseCollection*, const void*> value(targetPhrases, ptNode);
+  ActiveChartItem value(targetPhrases, ptNode);
   m_targetPhrases[&phraseDictionary] = value;
 }
+
+void InputPath::SetTargetPhrasesChart(const PhraseDictionary &phraseDictionary
+                                 , const TargetPhraseCollection *targetPhrases
+                                 , const void *ptNode) const
+{
+  ActiveChartItem value(targetPhrases, ptNode);
+  m_activeChart[&phraseDictionary].push_back(value);
+}
+
+const ActiveChart *InputPath::GetActiveChart(const PhraseDictionary &phraseDictionary) const
+{
+  std::map<const PhraseDictionary*, std::vector<ActiveChartItem>  >::const_iterator iter;
+  iter = m_activeChart.find(&phraseDictionary);
+  if (iter != m_activeChart.end()) {
+	  return NULL;
+  }
+
+  return &iter->second;
+
+}
+
 
 const Word &InputPath::GetLastWord() const
 {

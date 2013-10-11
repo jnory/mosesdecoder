@@ -18,6 +18,8 @@ class InputPath;
 struct ScorePair;
 
 typedef std::vector<InputPath*> InputPathList;
+typedef std::pair<const TargetPhraseCollection*, const void*> ActiveChartItem;
+typedef std::vector<ActiveChartItem> ActiveChart;
 
 /** Each node contains
 1. substring used to searching the phrase table
@@ -37,7 +39,7 @@ protected:
   size_t m_nextNode; // distance to next node. For lattices
 
   // for phrase-based model only
-  mutable std::map<const PhraseDictionary*, std::pair<const TargetPhraseCollection*, const void*> > m_targetPhrases;
+  std::map<const PhraseDictionary*, ActiveChartItem> m_targetPhrases;
 
   // for syntax model only
   // phrases which fits this source path, but are the acutal source side of the rule
@@ -46,6 +48,8 @@ protected:
   mutable std::vector<std::vector<const Word*> > m_ruleSourceFromInputPath;
   const NonTerminalSet m_sourceNonTerms;
   std::vector<const InputPath*> m_postfixOf;
+
+  mutable std::map<const PhraseDictionary*, ActiveChart> m_activeChart;
 
 public:
   explicit InputPath()
@@ -85,8 +89,15 @@ public:
 
   void SetTargetPhrases(const PhraseDictionary &phraseDictionary
                         , const TargetPhraseCollection *targetPhrases
+                        , const void *ptNode);
+
+  void SetTargetPhrasesChart(const PhraseDictionary &phraseDictionary
+                        , const TargetPhraseCollection *targetPhrases
                         , const void *ptNode) const;
+
   const TargetPhraseCollection *GetTargetPhrases(const PhraseDictionary &phraseDictionary) const;
+
+  const ActiveChart *GetActiveChart(const PhraseDictionary &phraseDictionary) const;
 
   // pointer to internal node in phrase-table. Since this is implementation dependent, this is a void*
   const void *GetPtNode(const PhraseDictionary &phraseDictionary) const;

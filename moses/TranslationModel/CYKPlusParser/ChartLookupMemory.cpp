@@ -12,25 +12,11 @@ using namespace std;
 
 namespace Moses
 {
-ActiveChartItem::ActiveChartItem(const WordsRange &range,
-					const PhraseDictionaryNodeMemory &node)
-:m_range(range)
-,m_node(node)
-{
-
-}
-
-ActiveChart::~ActiveChart()
-{
-	RemoveAllInColl(m_coll);
-}
-
 ChartLookupMemory::ChartLookupMemory(const ChartCellCollection &chart
 							, const PhraseDictionaryMemory &pt
 							, size_t inputSize)
 :m_chart(chart)
 ,m_pt(pt)
-,m_activeCharts(inputSize)
 {
 
 }
@@ -42,17 +28,12 @@ void ChartLookupMemory::Init(const InputPath &path)
 	const PhraseDictionaryNodeMemory &root = m_pt.GetRootNode();
 
 	size_t endPos = range.GetEndPos();
-	ActiveChart &activeChart = m_activeCharts[endPos];
-
 
 	// just terminal
 	const PhraseDictionaryNodeMemory *child = root.GetChild(word);
 	if (child) {
-		ActiveChartItem *item = new ActiveChartItem(range, *child);
-		activeChart.Add(item);
-
 		const TargetPhraseCollection &tpColl = child->GetTargetPhraseCollection();
-		path.SetTargetPhrases(m_pt, &tpColl, child);
+		path.SetTargetPhrasesChart(m_pt, &tpColl, child);
 	}
 }
 
@@ -71,23 +52,22 @@ void ChartLookupMemory::Extend(const InputPath &path)
 	const WordsRange &prefixRange = prefixPath->GetWordsRange();
 
 	size_t prevEndPos = prefixRange.GetEndPos();
-	const ActiveChart &prevChart = m_activeCharts[prevEndPos];
-
 	size_t endPos = range.GetEndPos();
-	ActiveChart &activeChart = m_activeCharts[endPos];
 
 	// terminal
-	for (size_t i = 0; i < prevChart.GetColl().size(); ++i) {
-		const ActiveChartItem &item = *prevChart.GetColl()[i];
-		const PhraseDictionaryNodeMemory &node = item.GetNode();
+	const ActiveChart *prevActiveChart = prefixPath->GetActiveChart(m_pt);
+	if (prevActiveChart) {
+		for (size_t i = 0; i < prevActiveChart->size(); ++i) {
+			const ActiveChartItem &item = (*prevActiveChart)[i];
+			const PhraseDictionaryNodeMemory *node = (const PhraseDictionaryNodeMemory*) item.second;
 
-		const PhraseDictionaryNodeMemory *child = node.GetChild(word);
-		if (child) {
-			ActiveChartItem *item = new ActiveChartItem(range, *child);
-			activeChart.Add(item);
-
-			const TargetPhraseCollection &tpColl = child->GetTargetPhraseCollection();
-			path.SetTargetPhrases(m_pt, &tpColl, child);
+			if (node) {
+				const PhraseDictionaryNodeMemory *child = node->GetChild(word);
+				if (child) {
+					const TargetPhraseCollection &tpColl = child->GetTargetPhraseCollection();
+					path.SetTargetPhrasesChart(m_pt, &tpColl, child);
+				}
+			}
 		}
 	}
 
@@ -108,6 +88,27 @@ void ChartLookupMemory::ExtendNonTerms(const InputPath &path)
 
 void ChartLookupMemory::ExtendNonTermsWithPath(const InputPath &path)
 {
+	const InputPath *prefixPath = path.GetPrefixPath();
+	if (prefixPath) {
+		// not the 1st path. There must be an entry for this
+		const ActiveChart *activeChart = prefixPath->GetActiveChart(m_pt);
+
+		if (activeChart) {
+			for (size_t i = 0; i < activeChart->size(); ++i) {
+				const ActiveChartItem &item = (*activeChart)[i];
+				const PhraseDictionaryNodeMemory *prevNode
+						= (const PhraseDictionaryNodeMemory *) item.second;
+				if (prevNode) {
+					ExtendNonTermsWithPath(path, *prevNode);
+				}
+			}
+		}
+	}
+}
+
+void ChartLookupMemory::ExtendNonTermsWithPath(const InputPath &path
+						, const PhraseDictionaryNodeMemory &prevNode)
+{
 	const WordsRange &range = path.GetWordsRange();
 	cerr << "range=" << range << endl;
 
@@ -127,14 +128,18 @@ void ChartLookupMemory::ExtendNonTermsWithPath(const InputPath &path)
 			const Word &targetLabel = iterTargetLabels->first;
 			cerr << "non-terms=" << sourceNonTerm << targetLabel << endl;
 
-
+			const PhraseDictionaryNodeMemory *node = prevNode.GetChild(sourceNonTerm, targetLabel);
+			if (node) {
+				const TargetPhraseCollection *tpColl = &node->GetTargetPhraseCollection();
+				path.SetTargetPhrasesChart(m_pt, tpColl, node);
+			}
 		}
-
 
 		// do lookup
 	}
 
 }
+
 
 } // namespace
 
