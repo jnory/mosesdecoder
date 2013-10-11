@@ -150,8 +150,8 @@ ChartParser::ChartParser(InputType const &source, ChartCellCollectionBase &cells
     ChartRuleLookupManager *lookupMgr = nonConstDict->CreateRuleLookupManager(*this, cells);
     m_ruleLookupManagers.push_back(lookupMgr);
 
-    ChartLookup *newLookupMgr = nonConstDict->GetChartLookup(static_cast<const ChartCellCollection&>(cells));
-    m_lookupManagers.push_back(newLookupMgr);
+    //ChartLookup *newLookupMgr = nonConstDict->GetChartLookup(static_cast<const ChartCellCollection&>(cells));
+    //m_lookupManagers.push_back(newLookupMgr);
   }
 
 }
@@ -178,6 +178,7 @@ void ChartParser::Create(const WordsRange &wordsRange, ChartParserCallback &to)
 {
 	assert(m_decodeGraphList.size() == m_ruleLookupManagers.size());
 
+  // old lookup code
   std::vector <DecodeGraph*>::const_iterator iterDecodeGraph;
   std::vector <ChartRuleLookupManager*>::const_iterator iterRuleLookupManagers = m_ruleLookupManagers.begin();
   for (iterDecodeGraph = m_decodeGraphList.begin(); iterDecodeGraph != m_decodeGraphList.end(); ++iterDecodeGraph, ++iterRuleLookupManagers) {
@@ -190,17 +191,7 @@ void ChartParser::Create(const WordsRange &wordsRange, ChartParserCallback &to)
     }
   }
 
-  if (wordsRange.GetNumWordsCovered() == 1 && wordsRange.GetStartPos() != 0 && wordsRange.GetStartPos() != m_source.GetSize()-1) {
-    bool alwaysCreateDirectTranslationOption = StaticData::Instance().IsAlwaysCreateDirectTranslationOption();
-    if (to.Empty() || alwaysCreateDirectTranslationOption) {
-      // create unknown words for 1 word coverage where we don't have any trans options
-      const Word &sourceWord = m_source.GetWord(wordsRange.GetStartPos());
-      m_unknown.Process(sourceWord, wordsRange, to);
-    }
-  }
-
-
-  // new
+  // new lookup code
  const InputPath &path = GetInputPath(wordsRange);
  for (size_t i = 0; i < m_lookupManagers.size(); ++i) {
 	 ChartLookup &newLookupMgr = *m_lookupManagers[i];
@@ -212,6 +203,18 @@ void ChartParser::Create(const WordsRange &wordsRange, ChartParserCallback &to)
 		newLookupMgr.Extend(path);
 	  }
   }
+
+  // unknowns
+  if (wordsRange.GetNumWordsCovered() == 1 && wordsRange.GetStartPos() != 0 && wordsRange.GetStartPos() != m_source.GetSize()-1) {
+    bool alwaysCreateDirectTranslationOption = StaticData::Instance().IsAlwaysCreateDirectTranslationOption();
+    if (to.Empty() || alwaysCreateDirectTranslationOption) {
+      // create unknown words for 1 word coverage where we don't have any trans options
+      const Word &sourceWord = m_source.GetWord(wordsRange.GetStartPos());
+      m_unknown.Process(sourceWord, wordsRange, to);
+    }
+  }
+
+
 
 }
 
