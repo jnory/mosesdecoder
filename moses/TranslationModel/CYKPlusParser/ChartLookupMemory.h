@@ -70,7 +70,8 @@ protected:
 
 
 	void ExtendNonTerms(const InputPath &path);
-	void ExtendNonTermsWithPostFixPath(const InputPath &path);
+	void ExtendNonTermsWithPath(const InputPath &path);
+
 
 };
 

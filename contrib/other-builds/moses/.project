@@ -147,11 +147,6 @@
 			<locationURI>PARENT-3-PROJECT_LOC/moses/ChartCellLabelSet.h</locationURI>
 		</link>
 		<link>
-			<name>ChartChartLookup.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/moses/ChartChartLookup.h</locationURI>
-		</link>
-		<link>
 			<name>ChartHypothesis.cpp</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/moses/ChartHypothesis.cpp</locationURI>

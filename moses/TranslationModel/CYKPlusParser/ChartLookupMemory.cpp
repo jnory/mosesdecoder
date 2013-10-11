@@ -63,6 +63,11 @@ void ChartLookupMemory::Extend(const InputPath &path)
 
 	const InputPath *prefixPath = path.GetPrefixPath();
 	assert(prefixPath);
+
+	// lookup non term which covers previous range.
+	// It wouldn't have been done the last time round
+	ExtendNonTermsWithPath(*prefixPath);
+
 	const WordsRange &prefixRange = prefixPath->GetWordsRange();
 
 	size_t prevEndPos = prefixRange.GetEndPos();
@@ -94,22 +99,18 @@ void ChartLookupMemory::Extend(const InputPath &path)
 
 void ChartLookupMemory::ExtendNonTerms(const InputPath &path)
 {
-	// lookup non term which covers previous range.
-	// It wouldn't have been done the last time round
-	const InputPath *prefixPath = path.GetPrefixPath();
-	CHECK(prefixPath);
-	ExtendNonTermsWithPostFixPath(*prefixPath);
-
 	const std::vector<const InputPath*> &postfixPaths = path.GetPostfixOf();
 	for (size_t i = 0; i < postfixPaths.size(); ++i) {
 		const InputPath &postfixPath = *postfixPaths[i];
-		ExtendNonTermsWithPostFixPath(postfixPath);
+		ExtendNonTermsWithPath(postfixPath);
 	}
 }
 
-void ChartLookupMemory::ExtendNonTermsWithPostFixPath(const InputPath &path)
+void ChartLookupMemory::ExtendNonTermsWithPath(const InputPath &path)
 {
 	const WordsRange &range = path.GetWordsRange();
+	cerr << "range=" << range << endl;
+
 	const ChartCell &cell = m_chart.Get(range);
 	const ChartCellLabelSet &targetLabels = cell.GetTargetLabelSet();
 
@@ -125,6 +126,8 @@ void ChartLookupMemory::ExtendNonTermsWithPostFixPath(const InputPath &path)
 		for (iterTargetLabels = targetLabels.begin(); iterTargetLabels != targetLabels.end(); ++iterTargetLabels) {
 			const Word &targetLabel = iterTargetLabels->first;
 			cerr << "non-terms=" << sourceNonTerm << targetLabel << endl;
+
+
 		}
 
 
