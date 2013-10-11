@@ -150,8 +150,8 @@ ChartParser::ChartParser(InputType const &source, ChartCellCollectionBase &cells
     ChartRuleLookupManager *lookupMgr = nonConstDict->CreateRuleLookupManager(*this, cells);
     m_ruleLookupManagers.push_back(lookupMgr);
 
-    //ChartLookup *newLookupMgr = nonConstDict->GetChartLookup(static_cast<const ChartCellCollection&>(cells));
-    //m_lookupManagers.push_back(newLookupMgr);
+    ChartLookup *newLookupMgr = nonConstDict->GetChartLookup(static_cast<const ChartCellCollection&>(cells));
+    m_lookupManagers.push_back(newLookupMgr);
   }
 
 }
@@ -201,7 +201,6 @@ void ChartParser::Create(const WordsRange &wordsRange, ChartParserCallback &to)
 
 
   // new
- cerr << "wordsRange=" << wordsRange  << endl;
  const InputPath &path = GetInputPath(wordsRange);
  for (size_t i = 0; i < m_lookupManagers.size(); ++i) {
 	 ChartLookup &newLookupMgr = *m_lookupManagers[i];
@@ -247,20 +246,20 @@ void ChartParser::CreateInputPaths(const InputType &input)
   for (size_t startPos = 0; startPos < inputSize; ++startPos) {
 	  for (size_t endPos = startPos; endPos < inputSize; ++endPos) {
 		  InputPath &path = GetInputPath(startPos, endPos);
-		  cerr << "path=" <<path << endl;
-		  CreateInputPathPostfixes(path);
+		  CreateInputPathSegmentations(path);
 	  }
   }
 }
 
-void ChartParser::CreateInputPathPostfixes(InputPath &path)
+void ChartParser::CreateInputPathSegmentations(InputPath &path)
 {
   const WordsRange &range = path.GetWordsRange();
+  size_t startPos = range.GetStartPos();
   size_t endPos = range.GetEndPos();
-  for (size_t startPos = range.GetStartPos() + 1; startPos <= endPos; ++startPos) {
-	  const InputPath &postfixPath = GetInputPath(startPos, endPos);
-	  cerr << "postfixPath=" << postfixPath << endl;
-	  path.AddPostfixOf(&postfixPath);
+  for (size_t midPos = range.GetStartPos() + 1; midPos <= endPos; ++midPos) {
+	  const InputPath &startPath = GetInputPath(startPos, midPos);
+	  const InputPath &endPath = GetInputPath(midPos, endPos);
+	  path.AddPostfixOf(&startPath, &endPath);
   }
 
 }

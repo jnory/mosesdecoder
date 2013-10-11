@@ -70,7 +70,7 @@ const ActiveChart *InputPath::GetActiveChart(const PhraseDictionary &phraseDicti
 {
   std::map<const PhraseDictionary*, std::vector<ActiveChartItem>  >::const_iterator iter;
   iter = m_activeChart.find(&phraseDictionary);
-  if (iter != m_activeChart.end()) {
+  if (iter == m_activeChart.end()) {
 	  return NULL;
   }
 

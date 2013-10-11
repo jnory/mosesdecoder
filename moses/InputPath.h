@@ -20,6 +20,7 @@ struct ScorePair;
 typedef std::vector<InputPath*> InputPathList;
 typedef std::pair<const TargetPhraseCollection*, const void*> ActiveChartItem;
 typedef std::vector<ActiveChartItem> ActiveChart;
+typedef std::pair<const InputPath*, const InputPath*> InputPathSegmentation;
 
 /** Each node contains
 1. substring used to searching the phrase table
@@ -47,7 +48,7 @@ protected:
   // used but placeholder code
   mutable std::vector<std::vector<const Word*> > m_ruleSourceFromInputPath;
   const NonTerminalSet m_sourceNonTerms;
-  std::vector<const InputPath*> m_postfixOf;
+  std::vector<InputPathSegmentation> m_postfixOf;
 
   mutable std::map<const PhraseDictionary*, ActiveChart> m_activeChart;
 
@@ -110,12 +111,12 @@ public:
     return m_ruleSourceFromInputPath.back();
   }
 
-  void AddPostfixOf(const InputPath *path)
+  void AddPostfixOf(const InputPath *begin, const InputPath *end)
   {
-	  m_postfixOf.push_back(path);
+	  m_postfixOf.push_back(InputPathSegmentation(begin, end));
   }
 
-  const std::vector<const InputPath*> &GetPostfixOf() const
+  const std::vector<InputPathSegmentation> &GetPostfixOf() const
   { return m_postfixOf; }
 
 };

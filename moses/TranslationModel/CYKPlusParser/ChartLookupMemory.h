@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <vector>
 #include "ChartLookup.h"
+#include "moses/InputPath.h"
 
 namespace Moses
 {
@@ -30,7 +31,7 @@ protected:
 
 
 	void ExtendNonTerms(const InputPath &path);
-	void ExtendNonTermsWithPath(const InputPath &path);
+	void ExtendNonTermsWithPath(const InputPathSegmentation &segmentation);
 	void ExtendNonTermsWithPath(const InputPath &path
 							, const PhraseDictionaryNodeMemory &prevNode);
 

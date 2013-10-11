@@ -41,13 +41,15 @@ void ChartLookupMemory::Extend(const InputPath &path)
 {
 	const Word &word = path.GetLastWord();
 	const WordsRange &range = path.GetWordsRange();
+	cerr << "range=" << range << endl;
 
 	const InputPath *prefixPath = path.GetPrefixPath();
 	assert(prefixPath);
+	cerr << "prefixPath=" << *prefixPath << endl;
 
 	// lookup non term which covers previous range.
 	// It wouldn't have been done the last time round
-	ExtendNonTermsWithPath(*prefixPath);
+	ExtendNonTermsWithPath(*prefixPath, m_pt.GetRootNode());
 
 	const WordsRange &prefixRange = prefixPath->GetWordsRange();
 
@@ -79,28 +81,27 @@ void ChartLookupMemory::Extend(const InputPath &path)
 
 void ChartLookupMemory::ExtendNonTerms(const InputPath &path)
 {
-	const std::vector<const InputPath*> &postfixPaths = path.GetPostfixOf();
-	for (size_t i = 0; i < postfixPaths.size(); ++i) {
-		const InputPath &postfixPath = *postfixPaths[i];
-		ExtendNonTermsWithPath(postfixPath);
+	const std::vector<InputPathSegmentation> &segmentations = path.GetPostfixOf();
+	for (size_t i = 0; i < segmentations.size(); ++i) {
+		const InputPathSegmentation &segmentation = segmentations[i];
+		ExtendNonTermsWithPath(segmentation);
 	}
 }
 
-void ChartLookupMemory::ExtendNonTermsWithPath(const InputPath &path)
+void ChartLookupMemory::ExtendNonTermsWithPath(const InputPathSegmentation &segmentation)
 {
-	const InputPath *prefixPath = path.GetPrefixPath();
-	if (prefixPath) {
-		// not the 1st path. There must be an entry for this
-		const ActiveChart *activeChart = prefixPath->GetActiveChart(m_pt);
+	const InputPath *beginPath = segmentation.first;
+	const InputPath *endPath = segmentation.second;
 
-		if (activeChart) {
-			for (size_t i = 0; i < activeChart->size(); ++i) {
-				const ActiveChartItem &item = (*activeChart)[i];
-				const PhraseDictionaryNodeMemory *prevNode
-						= (const PhraseDictionaryNodeMemory *) item.second;
-				if (prevNode) {
-					ExtendNonTermsWithPath(path, *prevNode);
-				}
+	const ActiveChart *activeChart = beginPath->GetActiveChart(m_pt);
+
+	if (activeChart) {
+		for (size_t i = 0; i < activeChart->size(); ++i) {
+			const ActiveChartItem &item = (*activeChart)[i];
+			const PhraseDictionaryNodeMemory *prevNode
+					= (const PhraseDictionaryNodeMemory *) item.second;
+			if (prevNode) {
+				ExtendNonTermsWithPath(*endPath, *prevNode);
 			}
 		}
 	}
@@ -110,8 +111,6 @@ void ChartLookupMemory::ExtendNonTermsWithPath(const InputPath &path
 						, const PhraseDictionaryNodeMemory &prevNode)
 {
 	const WordsRange &range = path.GetWordsRange();
-	cerr << "range=" << range << endl;
-
 	const ChartCell &cell = m_chart.Get(range);
 	const ChartCellLabelSet &targetLabels = cell.GetTargetLabelSet();
 
