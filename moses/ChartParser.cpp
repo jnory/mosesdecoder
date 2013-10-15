@@ -150,8 +150,8 @@ ChartParser::ChartParser(InputType const &source, ChartCellCollectionBase &cells
     ChartRuleLookupManager *lookupMgr = nonConstDict->CreateRuleLookupManager(*this, cells);
     m_ruleLookupManagers.push_back(lookupMgr);
 
-    ChartLookup *newLookupMgr = nonConstDict->GetChartLookup(static_cast<const ChartCellCollection&>(cells));
-    m_lookupManagers.push_back(newLookupMgr);
+    //ChartLookup *newLookupMgr = nonConstDict->GetChartLookup(static_cast<const ChartCellCollection&>(cells));
+    //m_lookupManagers.push_back(newLookupMgr);
   }
 
 }
@@ -179,7 +179,7 @@ void ChartParser::Create(const WordsRange &wordsRange, ChartParserCallback &to)
   assert(m_decodeGraphList.size() == m_ruleLookupManagers.size());
 
   // old lookup code
-  /*
+
   std::vector <DecodeGraph*>::const_iterator iterDecodeGraph;
   std::vector <ChartRuleLookupManager*>::const_iterator iterRuleLookupManagers = m_ruleLookupManagers.begin();
   for (iterDecodeGraph = m_decodeGraphList.begin(); iterDecodeGraph != m_decodeGraphList.end(); ++iterDecodeGraph, ++iterRuleLookupManagers) {
@@ -191,7 +191,6 @@ void ChartParser::Create(const WordsRange &wordsRange, ChartParserCallback &to)
       ruleLookupManager.GetChartRuleCollection(wordsRange, to);
     }
   }
-  */
 
   // new lookup code
  const InputPath &path = GetInputPath(wordsRange);

@@ -17,10 +17,27 @@ class TargetPhrase;
 class InputPath;
 struct ScorePair;
 
+class ActiveChartItem
+{
+public:
+	ActiveChartItem(const TargetPhraseCollection *tpColl, const void *ptNode)
+	:m_tpColl(tpColl)
+	,m_ptNode(ptNode)
+	{}
+
+	const TargetPhraseCollection *GetTargetPhraseCollection() const
+	{ return m_tpColl; }
+	const void *GetPtNode() const
+	{ return m_ptNode; }
+protected:
+	const TargetPhraseCollection *m_tpColl;
+	const void *m_ptNode;
+};
+
 typedef std::vector<InputPath*> InputPathList;
-typedef std::pair<const TargetPhraseCollection*, const void*> ActiveChartItem;
 typedef std::vector<ActiveChartItem> ActiveChart;
 typedef std::pair<const InputPath*, const InputPath*> InputPathSegmentation;
+
 
 /** Each node contains
 1. substring used to searching the phrase table
@@ -40,7 +57,7 @@ protected:
   size_t m_nextNode; // distance to next node. For lattices
 
   // for phrase-based model only
-  std::map<const PhraseDictionary*, ActiveChartItem> m_targetPhrases;
+  std::map<const PhraseDictionary*, ActiveChartItem*> m_targetPhrases;
 
   // for syntax model only
   // phrases which fits this source path, but are the acutal source side of the rule

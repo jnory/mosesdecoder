@@ -63,7 +63,7 @@ void ChartLookupMemory::Extend(const InputPath &path, ChartParserCallback &to)
 	if (prevActiveChart) {
 		for (size_t i = 0; i < prevActiveChart->size(); ++i) {
 			const ActiveChartItem &item = (*prevActiveChart)[i];
-			const PhraseDictionaryNodeMemory *node = (const PhraseDictionaryNodeMemory*) item.second;
+			const PhraseDictionaryNodeMemory *node = (const PhraseDictionaryNodeMemory*) item.GetPtNode();
 
 			if (node) {
 				const PhraseDictionaryNodeMemory *child = node->GetChild(word);
@@ -107,7 +107,7 @@ void ChartLookupMemory::ExtendNonTermsWithPath(const InputPathSegmentation &segm
 			// loop thru each item in active chart from the 1st half of the path
 			const ActiveChartItem &item = (*activeChart)[i];
 			const PhraseDictionaryNodeMemory *prevNode
-					= (const PhraseDictionaryNodeMemory *) item.second;
+					= (const PhraseDictionaryNodeMemory *) item.GetPtNode();
 			if (prevNode) {
 				ExtendNonTermsWithPath(*endPath, *prevNode, to);
 			}
