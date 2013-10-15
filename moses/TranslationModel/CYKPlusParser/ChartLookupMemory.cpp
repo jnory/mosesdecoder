@@ -83,6 +83,8 @@ void ChartLookupMemory::ExtendNonTerms(const InputPath &path)
 {
 	const std::vector<InputPathSegmentation> &segmentations = path.GetPostfixOf();
 	for (size_t i = 0; i < segmentations.size(); ++i) {
+		// lookup thru all possible division of the path.
+		// eg. if path=[3-5], than loop thru [3-3][4-5], [3-4][5-5]
 		const InputPathSegmentation &segmentation = segmentations[i];
 		ExtendNonTermsWithPath(segmentation);
 	}
@@ -90,13 +92,16 @@ void ChartLookupMemory::ExtendNonTerms(const InputPath &path)
 
 void ChartLookupMemory::ExtendNonTermsWithPath(const InputPathSegmentation &segmentation)
 {
+	// lookup all non-terms that start somewhere in the middle of the path
 	const InputPath *beginPath = segmentation.first;
 	const InputPath *endPath = segmentation.second;
+	cerr << "beginPath=" << *beginPath << " endPath=" << *endPath << endl;
 
 	const ActiveChart *activeChart = beginPath->GetActiveChart(m_pt);
 
 	if (activeChart) {
 		for (size_t i = 0; i < activeChart->size(); ++i) {
+			// loop thru each item in active chart from the 1st half of the path
 			const ActiveChartItem &item = (*activeChart)[i];
 			const PhraseDictionaryNodeMemory *prevNode
 					= (const PhraseDictionaryNodeMemory *) item.second;
@@ -110,6 +115,7 @@ void ChartLookupMemory::ExtendNonTermsWithPath(const InputPathSegmentation &segm
 void ChartLookupMemory::ExtendNonTermsWithPath(const InputPath &path
 						, const PhraseDictionaryNodeMemory &prevNode)
 {
+	// lookup all non-terms that can space this path
 	const WordsRange &range = path.GetWordsRange();
 	const ChartCell &cell = m_chart.Get(range);
 	const ChartCellLabelSet &targetLabels = cell.GetTargetLabelSet();
@@ -120,23 +126,20 @@ void ChartLookupMemory::ExtendNonTermsWithPath(const InputPath &path
 	NonTerminalSet::const_iterator iterSourceNonTerms;
 	for (iterSourceNonTerms = sourceNonTerms.begin(); iterSourceNonTerms != sourceNonTerms.end(); ++iterSourceNonTerms) {
 		const Word &sourceNonTerm = *iterSourceNonTerms;
-		cerr << "sourceNonTerm=" << sourceNonTerm << endl;
 
 		ChartCellLabelSet::const_iterator iterTargetLabels;
 		for (iterTargetLabels = targetLabels.begin(); iterTargetLabels != targetLabels.end(); ++iterTargetLabels) {
 			const Word &targetLabel = iterTargetLabels->first;
-			cerr << "non-terms=" << sourceNonTerm << targetLabel << endl;
 
 			const PhraseDictionaryNodeMemory *node = prevNode.GetChild(sourceNonTerm, targetLabel);
 			if (node) {
+				cerr << "range=" << range << " non-terms=" << sourceNonTerm << targetLabel << endl;
+
 				const TargetPhraseCollection *tpColl = &node->GetTargetPhraseCollection();
 				path.SetTargetPhrasesChart(m_pt, tpColl, node);
 			}
 		}
-
-		// do lookup
 	}
-
 }
 
 
