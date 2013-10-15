@@ -21,19 +21,22 @@ public:
 			, const PhraseDictionaryMemory &pt
 			, size_t inputSize);
 
-	void Init(const InputPath &path);
+	void Init(const InputPath &path, ChartParserCallback &to);
 
-	void Extend(const InputPath &path);
+	void Extend(const InputPath &path, ChartParserCallback &to);
 
 protected:
 	const ChartCellCollection &m_chart;
 	const PhraseDictionaryMemory &m_pt;
 
 
-	void ExtendNonTerms(const InputPath &path);
-	void ExtendNonTermsWithPath(const InputPathSegmentation &segmentation);
-	void ExtendNonTermsWithPath(const InputPath &path
-							, const PhraseDictionaryNodeMemory &prevNode);
+	void ExtendNonTerms(const InputPath &path,
+						ChartParserCallback &to);
+	void ExtendNonTermsWithPath(const InputPathSegmentation &segmentation,
+								ChartParserCallback &to);
+	void ExtendNonTermsWithPath(const InputPath &path,
+							const PhraseDictionaryNodeMemory &prevNode,
+							ChartParserCallback &to);
 
 };
 

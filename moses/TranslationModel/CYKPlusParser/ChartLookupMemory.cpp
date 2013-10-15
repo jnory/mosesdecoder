@@ -7,6 +7,7 @@
 #include "moses/TranslationModel/PhraseDictionaryMemory.h"
 #include "moses/ChartCell.h"
 #include "moses/ChartCellCollection.h"
+#include "moses/ChartParserCallback.h"
 
 using namespace std;
 
@@ -21,7 +22,7 @@ ChartLookupMemory::ChartLookupMemory(const ChartCellCollection &chart
 
 }
 
-void ChartLookupMemory::Init(const InputPath &path)
+void ChartLookupMemory::Init(const InputPath &path, ChartParserCallback &to)
 {
 	const Word &word = path.GetLastWord();
 	const WordsRange &range = path.GetWordsRange();
@@ -34,10 +35,11 @@ void ChartLookupMemory::Init(const InputPath &path)
 	if (child) {
 		const TargetPhraseCollection &tpColl = child->GetTargetPhraseCollection();
 		path.SetTargetPhrasesChart(m_pt, &tpColl, child);
+		to.Add(tpColl, m_stackVec, range);
 	}
 }
 
-void ChartLookupMemory::Extend(const InputPath &path)
+void ChartLookupMemory::Extend(const InputPath &path, ChartParserCallback &to)
 {
 	const Word &word = path.GetLastWord();
 	const WordsRange &range = path.GetWordsRange();
@@ -49,7 +51,7 @@ void ChartLookupMemory::Extend(const InputPath &path)
 
 	// lookup non term which covers previous range.
 	// It wouldn't have been done the last time round
-	ExtendNonTermsWithPath(*prefixPath, m_pt.GetRootNode());
+	ExtendNonTermsWithPath(*prefixPath, m_pt.GetRootNode(), to);
 
 	const WordsRange &prefixRange = prefixPath->GetWordsRange();
 
@@ -68,29 +70,30 @@ void ChartLookupMemory::Extend(const InputPath &path)
 				if (child) {
 					const TargetPhraseCollection &tpColl = child->GetTargetPhraseCollection();
 					path.SetTargetPhrasesChart(m_pt, &tpColl, child);
+					to.Add(tpColl, m_stackVec, range);
 				}
 			}
 		}
 	}
 
 	// non-term
-	ExtendNonTerms(path);
+	ExtendNonTerms(path, to);
 
 
 }
 
-void ChartLookupMemory::ExtendNonTerms(const InputPath &path)
+void ChartLookupMemory::ExtendNonTerms(const InputPath &path, ChartParserCallback &to)
 {
 	const std::vector<InputPathSegmentation> &segmentations = path.GetPostfixOf();
 	for (size_t i = 0; i < segmentations.size(); ++i) {
 		// lookup thru all possible division of the path.
 		// eg. if path=[3-5], than loop thru [3-3][4-5], [3-4][5-5]
 		const InputPathSegmentation &segmentation = segmentations[i];
-		ExtendNonTermsWithPath(segmentation);
+		ExtendNonTermsWithPath(segmentation, to);
 	}
 }
 
-void ChartLookupMemory::ExtendNonTermsWithPath(const InputPathSegmentation &segmentation)
+void ChartLookupMemory::ExtendNonTermsWithPath(const InputPathSegmentation &segmentation, ChartParserCallback &to)
 {
 	// lookup all non-terms that start somewhere in the middle of the path
 	const InputPath *beginPath = segmentation.first;
@@ -106,14 +109,15 @@ void ChartLookupMemory::ExtendNonTermsWithPath(const InputPathSegmentation &segm
 			const PhraseDictionaryNodeMemory *prevNode
 					= (const PhraseDictionaryNodeMemory *) item.second;
 			if (prevNode) {
-				ExtendNonTermsWithPath(*endPath, *prevNode);
+				ExtendNonTermsWithPath(*endPath, *prevNode, to);
 			}
 		}
 	}
 }
 
-void ChartLookupMemory::ExtendNonTermsWithPath(const InputPath &path
-						, const PhraseDictionaryNodeMemory &prevNode)
+void ChartLookupMemory::ExtendNonTermsWithPath(const InputPath &path,
+						const PhraseDictionaryNodeMemory &prevNode,
+						ChartParserCallback &to)
 {
 	// lookup all non-terms that can space this path
 	const WordsRange &range = path.GetWordsRange();
@@ -135,8 +139,9 @@ void ChartLookupMemory::ExtendNonTermsWithPath(const InputPath &path
 			if (node) {
 				cerr << "range=" << range << " non-terms=" << sourceNonTerm << targetLabel << endl;
 
-				const TargetPhraseCollection *tpColl = &node->GetTargetPhraseCollection();
-				path.SetTargetPhrasesChart(m_pt, tpColl, node);
+				const TargetPhraseCollection &tpColl = node->GetTargetPhraseCollection();
+				path.SetTargetPhrasesChart(m_pt, &tpColl, node);
+				to.Add(tpColl, m_stackVec, range);
 			}
 		}
 	}

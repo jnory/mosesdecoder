@@ -176,9 +176,10 @@ ChartParser::~ChartParser()
 
 void ChartParser::Create(const WordsRange &wordsRange, ChartParserCallback &to)
 {
-	assert(m_decodeGraphList.size() == m_ruleLookupManagers.size());
+  assert(m_decodeGraphList.size() == m_ruleLookupManagers.size());
 
   // old lookup code
+  /*
   std::vector <DecodeGraph*>::const_iterator iterDecodeGraph;
   std::vector <ChartRuleLookupManager*>::const_iterator iterRuleLookupManagers = m_ruleLookupManagers.begin();
   for (iterDecodeGraph = m_decodeGraphList.begin(); iterDecodeGraph != m_decodeGraphList.end(); ++iterDecodeGraph, ++iterRuleLookupManagers) {
@@ -190,6 +191,7 @@ void ChartParser::Create(const WordsRange &wordsRange, ChartParserCallback &to)
       ruleLookupManager.GetChartRuleCollection(wordsRange, to);
     }
   }
+  */
 
   // new lookup code
  const InputPath &path = GetInputPath(wordsRange);
@@ -197,10 +199,10 @@ void ChartParser::Create(const WordsRange &wordsRange, ChartParserCallback &to)
 	 ChartLookup &newLookupMgr = *m_lookupManagers[i];
 
 	  if (wordsRange.GetNumWordsCovered() == 1) {
-	    newLookupMgr.Init(path);
+	    newLookupMgr.Init(path, to);
 	  }
 	  else {
-		newLookupMgr.Extend(path);
+		newLookupMgr.Extend(path, to);
 	  }
   }
 
