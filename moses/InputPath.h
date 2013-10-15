@@ -20,9 +20,12 @@ struct ScorePair;
 class ActiveChartItem
 {
 public:
-	ActiveChartItem(const TargetPhraseCollection *tpColl, const void *ptNode)
+	ActiveChartItem(const TargetPhraseCollection *tpColl,
+					const void *ptNode,
+					const ActiveChartItem *prevItem)
 	:m_tpColl(tpColl)
 	,m_ptNode(ptNode)
+	,m_prevItem(prevItem)
 	{}
 
 	const TargetPhraseCollection *GetTargetPhraseCollection() const
@@ -32,6 +35,7 @@ public:
 protected:
 	const TargetPhraseCollection *m_tpColl;
 	const void *m_ptNode;
+	const ActiveChartItem *m_prevItem;
 };
 
 typedef std::vector<InputPath*> InputPathList;
@@ -111,7 +115,8 @@ public:
 
   void SetTargetPhrasesChart(const PhraseDictionary &phraseDictionary
                         , const TargetPhraseCollection *targetPhrases
-                        , const void *ptNode) const;
+                        , const void *ptNode
+                        , const ActiveChartItem *prevItem) const;
 
   const TargetPhraseCollection *GetTargetPhrases(const PhraseDictionary &phraseDictionary) const;
 

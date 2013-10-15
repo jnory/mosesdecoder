@@ -57,15 +57,16 @@ void InputPath::SetTargetPhrases(const PhraseDictionary &phraseDictionary
                                  , const TargetPhraseCollection *targetPhrases
                                  , const void *ptNode)
 {
-  ActiveChartItem *value = new ActiveChartItem(targetPhrases, ptNode);
+  ActiveChartItem *value = new ActiveChartItem(targetPhrases, ptNode, NULL);
   m_targetPhrases[&phraseDictionary] = value;
 }
 
 void InputPath::SetTargetPhrasesChart(const PhraseDictionary &phraseDictionary
                                  , const TargetPhraseCollection *targetPhrases
-                                 , const void *ptNode) const
+                                 , const void *ptNode
+                                 , const ActiveChartItem *prevItem) const
 {
-  ActiveChartItem value(targetPhrases, ptNode);
+  ActiveChartItem value(targetPhrases, ptNode, prevItem);
   m_activeChart[&phraseDictionary].push_back(value);
 }
 

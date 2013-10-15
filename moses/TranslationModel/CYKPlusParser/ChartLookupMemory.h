@@ -36,7 +36,8 @@ protected:
 								ChartParserCallback &to);
 	void ExtendNonTermsWithPath(const InputPath &path,
 							const PhraseDictionaryNodeMemory &prevNode,
-							ChartParserCallback &to);
+							ChartParserCallback &to,
+							const ActiveChartItem *prevItem);
 
 };
 

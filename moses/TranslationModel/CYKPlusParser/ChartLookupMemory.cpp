@@ -34,7 +34,7 @@ void ChartLookupMemory::Init(const InputPath &path, ChartParserCallback &to)
 	const PhraseDictionaryNodeMemory *child = root.GetChild(word);
 	if (child) {
 		const TargetPhraseCollection &tpColl = child->GetTargetPhraseCollection();
-		path.SetTargetPhrasesChart(m_pt, &tpColl, child);
+		path.SetTargetPhrasesChart(m_pt, &tpColl, child, NULL);
 		to.Add(tpColl, m_stackVec, range);
 	}
 }
@@ -51,7 +51,7 @@ void ChartLookupMemory::Extend(const InputPath &path, ChartParserCallback &to)
 
 	// lookup non term which covers previous range.
 	// It wouldn't have been done the last time round
-	ExtendNonTermsWithPath(*prefixPath, m_pt.GetRootNode(), to);
+	ExtendNonTermsWithPath(*prefixPath, m_pt.GetRootNode(), to, NULL);
 
 	const WordsRange &prefixRange = prefixPath->GetWordsRange();
 
@@ -62,14 +62,14 @@ void ChartLookupMemory::Extend(const InputPath &path, ChartParserCallback &to)
 	const ActiveChart *prevActiveChart = prefixPath->GetActiveChart(m_pt);
 	if (prevActiveChart) {
 		for (size_t i = 0; i < prevActiveChart->size(); ++i) {
-			const ActiveChartItem &item = (*prevActiveChart)[i];
-			const PhraseDictionaryNodeMemory *node = (const PhraseDictionaryNodeMemory*) item.GetPtNode();
+			const ActiveChartItem &prevItem = (*prevActiveChart)[i];
+			const PhraseDictionaryNodeMemory *node = (const PhraseDictionaryNodeMemory*) prevItem.GetPtNode();
 
 			if (node) {
 				const PhraseDictionaryNodeMemory *child = node->GetChild(word);
 				if (child) {
 					const TargetPhraseCollection &tpColl = child->GetTargetPhraseCollection();
-					path.SetTargetPhrasesChart(m_pt, &tpColl, child);
+					path.SetTargetPhrasesChart(m_pt, &tpColl, child, &prevItem);
 					to.Add(tpColl, m_stackVec, range);
 				}
 			}
@@ -105,11 +105,11 @@ void ChartLookupMemory::ExtendNonTermsWithPath(const InputPathSegmentation &segm
 	if (activeChart) {
 		for (size_t i = 0; i < activeChart->size(); ++i) {
 			// loop thru each item in active chart from the 1st half of the path
-			const ActiveChartItem &item = (*activeChart)[i];
+			const ActiveChartItem &prevItem = (*activeChart)[i];
 			const PhraseDictionaryNodeMemory *prevNode
-					= (const PhraseDictionaryNodeMemory *) item.GetPtNode();
+					= (const PhraseDictionaryNodeMemory *) prevItem.GetPtNode();
 			if (prevNode) {
-				ExtendNonTermsWithPath(*endPath, *prevNode, to);
+				ExtendNonTermsWithPath(*endPath, *prevNode, to, &prevItem);
 			}
 		}
 	}
@@ -117,7 +117,8 @@ void ChartLookupMemory::ExtendNonTermsWithPath(const InputPathSegmentation &segm
 
 void ChartLookupMemory::ExtendNonTermsWithPath(const InputPath &path,
 						const PhraseDictionaryNodeMemory &prevNode,
-						ChartParserCallback &to)
+						ChartParserCallback &to,
+						const ActiveChartItem *prevItem)
 {
 	// lookup all non-terms that can space this path
 	const WordsRange &range = path.GetWordsRange();
@@ -140,7 +141,7 @@ void ChartLookupMemory::ExtendNonTermsWithPath(const InputPath &path,
 				cerr << "range=" << range << " non-terms=" << sourceNonTerm << targetLabel << endl;
 
 				const TargetPhraseCollection &tpColl = node->GetTargetPhraseCollection();
-				path.SetTargetPhrasesChart(m_pt, &tpColl, node);
+				path.SetTargetPhrasesChart(m_pt, &tpColl, node, prevItem);
 				to.Add(tpColl, m_stackVec, range);
 			}
 		}
