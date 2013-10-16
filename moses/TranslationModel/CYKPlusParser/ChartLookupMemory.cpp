@@ -154,16 +154,17 @@ void ChartLookupMemory::AddCompletedRule(
   const WordsRange &range,
   ChartParserCallback &outColl)
 {
-	/*
   // Determine the rule's rank.
   size_t rank = 0;
   const ActiveChartItem *currItem = &item;
   while (currItem) {
-    if (node->IsNonTerminal()) {
+    if (currItem->GetLabel().IsNonTerminal()) {
       ++rank;
     }
-    node = node->GetPrev();
+    currItem = currItem->GetPrev();
   }
+  cerr << "range=" << range << " rank=" << rank << endl;
+	/*
 
   // Fill m_stackVec with a stack pointer for each non-terminal.
   m_stackVec.resize(rank);

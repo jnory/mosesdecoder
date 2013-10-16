@@ -20,11 +20,11 @@ struct ScorePair;
 class ActiveChartItem
 {
 public:
-	ActiveChartItem(const Word &word,
+	ActiveChartItem(const Word &label,
 					const TargetPhraseCollection *tpColl,
 					const void *ptNode,
 					const ActiveChartItem *prevItem)
-	:m_word(&word)
+	:m_label(&label)
     ,m_tpColl(tpColl)
 	,m_ptNode(ptNode)
 	,m_prevItem(prevItem)
@@ -34,8 +34,13 @@ public:
 	{ return m_tpColl; }
 	const void *GetPtNode() const
 	{ return m_ptNode; }
+	const Word &GetLabel() const
+	{ return *m_label; }
+	const ActiveChartItem *GetPrev() const
+	{ return m_prevItem; }
+
 protected:
-	const Word *m_word;
+	const Word *m_label;
 	const TargetPhraseCollection *m_tpColl;
 	const void *m_ptNode;
 	const ActiveChartItem *m_prevItem;
