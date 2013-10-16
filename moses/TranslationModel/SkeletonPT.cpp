@@ -28,7 +28,7 @@ void SkeletonPT::GetTargetPhraseCollectionBatch(const InputPathList &inputPathQu
     tpColl->Add(tp);
 
     m_allTPColl.push_back(tpColl);
-    inputPath.SetTargetPhrases(*this, tpColl, NULL);
+    inputPath.SetTargetPhrases(*this, inputPath.GetLastWord(), tpColl, NULL);
   }
 }
 

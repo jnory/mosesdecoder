@@ -125,14 +125,14 @@ void PhraseDictionaryOnDisk::GetTargetPhraseCollectionBatch(InputPath &inputPath
 
     if (lastWordOnDisk == NULL) {
       // OOV according to this phrase table. Not possible to extend
-      inputPath.SetTargetPhrases(*this, NULL, NULL);
+      inputPath.SetTargetPhrases(*this, inputPath.GetLastWord(), NULL, NULL);
     } else {
       const OnDiskPt::PhraseNode *ptNode = prevPtNode->GetChild(*lastWordOnDisk, wrapper);
       if (ptNode) {
         const TargetPhraseCollection *targetPhrases = GetTargetPhraseCollection(ptNode);
-        inputPath.SetTargetPhrases(*this, targetPhrases, ptNode);
+        inputPath.SetTargetPhrases(*this, inputPath.GetLastWord(), targetPhrases, ptNode);
       } else {
-        inputPath.SetTargetPhrases(*this, NULL, NULL);
+        inputPath.SetTargetPhrases(*this, inputPath.GetLastWord(), NULL, NULL);
       }
 
       delete lastWordOnDisk;

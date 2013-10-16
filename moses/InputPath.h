@@ -20,10 +20,12 @@ struct ScorePair;
 class ActiveChartItem
 {
 public:
-	ActiveChartItem(const TargetPhraseCollection *tpColl,
+	ActiveChartItem(const Word &word,
+					const TargetPhraseCollection *tpColl,
 					const void *ptNode,
 					const ActiveChartItem *prevItem)
-	:m_tpColl(tpColl)
+	:m_word(&word)
+    ,m_tpColl(tpColl)
 	,m_ptNode(ptNode)
 	,m_prevItem(prevItem)
 	{}
@@ -33,6 +35,7 @@ public:
 	const void *GetPtNode() const
 	{ return m_ptNode; }
 protected:
+	const Word *m_word;
 	const TargetPhraseCollection *m_tpColl;
 	const void *m_ptNode;
 	const ActiveChartItem *m_prevItem;
@@ -110,10 +113,12 @@ public:
   }
 
   void SetTargetPhrases(const PhraseDictionary &phraseDictionary
+		  	  	  	  	, const Word &word
                         , const TargetPhraseCollection *targetPhrases
                         , const void *ptNode);
 
   void SetTargetPhrasesChart(const PhraseDictionary &phraseDictionary
+		  	  	  	  	, const Word &word
                         , const TargetPhraseCollection *targetPhrases
                         , const void *ptNode
                         , const ActiveChartItem *prevItem) const;

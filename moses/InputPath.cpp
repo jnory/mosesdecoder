@@ -54,19 +54,21 @@ const void *InputPath::GetPtNode(const PhraseDictionary &phraseDictionary) const
 }
 
 void InputPath::SetTargetPhrases(const PhraseDictionary &phraseDictionary
+								 , const Word &word
                                  , const TargetPhraseCollection *targetPhrases
                                  , const void *ptNode)
 {
-  ActiveChartItem *value = new ActiveChartItem(targetPhrases, ptNode, NULL);
+  ActiveChartItem *value = new ActiveChartItem(word, targetPhrases, ptNode, NULL);
   m_targetPhrases[&phraseDictionary] = value;
 }
 
 void InputPath::SetTargetPhrasesChart(const PhraseDictionary &phraseDictionary
+								 , const Word &word
                                  , const TargetPhraseCollection *targetPhrases
                                  , const void *ptNode
                                  , const ActiveChartItem *prevItem) const
 {
-  ActiveChartItem value(targetPhrases, ptNode, prevItem);
+  ActiveChartItem value(word, targetPhrases, ptNode, prevItem);
   m_activeChart[&phraseDictionary].push_back(value);
 }
 

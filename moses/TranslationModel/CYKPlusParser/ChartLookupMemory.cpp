@@ -34,7 +34,7 @@ void ChartLookupMemory::Init(const InputPath &path, ChartParserCallback &to)
 	const PhraseDictionaryNodeMemory *child = root.GetChild(word);
 	if (child) {
 		const TargetPhraseCollection &tpColl = child->GetTargetPhraseCollection();
-		path.SetTargetPhrasesChart(m_pt, &tpColl, child, NULL);
+		path.SetTargetPhrasesChart(m_pt, word, &tpColl, child, NULL);
 		to.Add(tpColl, m_stackVec, range);
 	}
 }
@@ -69,7 +69,7 @@ void ChartLookupMemory::Extend(const InputPath &path, ChartParserCallback &to)
 				const PhraseDictionaryNodeMemory *child = node->GetChild(word);
 				if (child) {
 					const TargetPhraseCollection &tpColl = child->GetTargetPhraseCollection();
-					path.SetTargetPhrasesChart(m_pt, &tpColl, child, &prevItem);
+					path.SetTargetPhrasesChart(m_pt, word, &tpColl, child, &prevItem);
 					to.Add(tpColl, m_stackVec, range);
 				}
 			}
@@ -141,13 +141,46 @@ void ChartLookupMemory::ExtendNonTermsWithPath(const InputPath &path,
 				cerr << "range=" << range << " non-terms=" << sourceNonTerm << targetLabel << endl;
 
 				const TargetPhraseCollection &tpColl = node->GetTargetPhraseCollection();
-				path.SetTargetPhrasesChart(m_pt, &tpColl, node, prevItem);
+				path.SetTargetPhrasesChart(m_pt, targetLabel, &tpColl, node, prevItem);
 				to.Add(tpColl, m_stackVec, range);
 			}
 		}
 	}
 }
 
+void ChartLookupMemory::AddCompletedRule(
+  const ActiveChartItem &item,
+  const TargetPhraseCollection &tpc,
+  const WordsRange &range,
+  ChartParserCallback &outColl)
+{
+	/*
+  // Determine the rule's rank.
+  size_t rank = 0;
+  const ActiveChartItem *currItem = &item;
+  while (currItem) {
+    if (node->IsNonTerminal()) {
+      ++rank;
+    }
+    node = node->GetPrev();
+  }
+
+  // Fill m_stackVec with a stack pointer for each non-terminal.
+  m_stackVec.resize(rank);
+  node = &dottedRule;
+  while (rank > 0) {
+    if (node->IsNonTerminal()) {
+      m_stackVec[--rank] = &node->GetChartCellLabel();
+    }
+    node = node->GetPrev();
+  }
+
+  // Add the (TargetPhraseCollection, StackVec) pair to the collection.
+  outColl.Add(tpc, m_stackVec, range);
+  */
+}
+
 
 } // namespace
+
 

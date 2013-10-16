@@ -39,6 +39,13 @@ protected:
 							ChartParserCallback &to,
 							const ActiveChartItem *prevItem);
 
+
+	void AddCompletedRule(
+	  const ActiveChartItem &item,
+	  const TargetPhraseCollection &tpc,
+	  const WordsRange &range,
+	  ChartParserCallback &outColl);
+
 };
 
 }
