@@ -2162,7 +2162,7 @@ sub get_config_tables {
 sub define_training_create_config {
     my ($step_id) = @_;
 
-    my ($config,$reordering_table,$phrase_translation_table,$generation_table,$sparse_lexical_features,$domains,$osm, @LM)
+    my ($config,$reordering_table,$phrase_translation_table,$translit_model,$generation_table,$sparse_lexical_features,$domains,$osm, @LM)
 			= &get_output_and_input($step_id);
 
     my $cmd = &get_config_tables($config,$reordering_table,$phrase_translation_table,$generation_table,$domains);
@@ -2649,8 +2649,14 @@ sub define_evaluation_decode {
     my $use_wade = &backoff_and_get("EVALUATION:$set:wade");
     my $hierarchical = &get("TRAINING:hierarchical-rule-set");
     my $word_alignment = &backoff_and_get("TRAINING:include-word-alignment-in-rules");
+    my $post_decoding_transliteration = &get("TRAINING:post-decoding-transliteration");
+		
+   # If Transliteration Module is to be used as post-decoding step ...	
+   if ($post_decoding_transliteration eq "yes"){
+	$settings .= " -output-unknowns $system_output.oov";
+   }
+  	
 
-    
     # specify additional output for analysis
     if (defined($report_precision_by_coverage) && $report_precision_by_coverage eq "yes") {
       $settings .= " -alignment-output-file $system_output.wa";
